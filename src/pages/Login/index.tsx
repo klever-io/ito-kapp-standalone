@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react';
 import Header from 'components/Header';
+import Copy from 'components/Copy';
+
 import { Container } from 'pages/styles';
-import { MainContent, AddressContainer, ButtonITOPage } from './styles';
+import {
+  MainContent,
+  AddressContainer,
+  AddressContent,
+  ButtonITOPage,
+} from './styles';
 import { Link } from 'react-router-dom';
+import { parseAddress } from 'utils';
+import { useWidth } from 'contexts/width';
 
 const Login: React.FC = () => {
+  const width = useWidth();
   const [walletAddress, setWalletAddress] = useState('');
 
   const connectWallet = async () => {
@@ -17,7 +27,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     connectWallet();
-  }, []);
+  }, [walletAddress]);
 
   return (
     <>
@@ -28,7 +38,14 @@ const Login: React.FC = () => {
             <>
               <span>Wallet connected!</span>
               <AddressContainer>
-                <span>{walletAddress}</span>
+                <AddressContent>
+                  <span>
+                    {width.isMobile
+                      ? parseAddress(walletAddress, 25)
+                      : walletAddress}
+                  </span>
+                </AddressContent>
+                <Copy data={walletAddress} info="Address" />
               </AddressContainer>
               <Link to="/ito">
                 <ButtonITOPage>

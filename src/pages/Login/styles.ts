@@ -7,7 +7,6 @@ export const Logo = styled.div`
 `;
 
 export const MainContent = styled.div`
-  /* background-color: red; */
   height: 100%;
 
   display: flex;
@@ -25,7 +24,14 @@ export const MainContent = styled.div`
 `;
 
 export const AddressContainer = styled.div`
-  width: 70%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+`;
+
+export const AddressContent = styled.div`
   margin-top: 1.6rem;
   background-color: rgb(36, 38, 79);
   display: flex;
@@ -34,6 +40,7 @@ export const AddressContainer = styled.div`
   padding: 0.6rem;
   border-radius: 0.3rem;
   min-height: 2rem;
+  margin-right: 0.5rem;
 `;
 
 export const ButtonITOPage = styled.div`

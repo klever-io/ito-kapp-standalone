@@ -1,3 +1,9 @@
+export const parseAddress = (address: string, maxLen: number): string => {
+  return address.length > maxLen
+    ? `${address.slice(0, maxLen / 2)}...${address.slice(-(maxLen / 2))}`
+    : address;
+};
+
 export const asyncDoIf = async (
   success: () => any,
   failure: () => any,
