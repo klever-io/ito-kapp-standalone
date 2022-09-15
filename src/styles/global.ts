@@ -51,6 +51,10 @@ export default createGlobalStyle`
     font-size: 1.5rem;
   }
 
+  a, u {
+    text-decoration: none;
+  }
+
   button {
     cursor: pointer;
   }

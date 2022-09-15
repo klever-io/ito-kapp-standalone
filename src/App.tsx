@@ -9,6 +9,13 @@ import Router from './routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+//add window methods to global scope
+declare global {
+  interface Window {
+    kleverWeb: any;
+  }
+}
+
 const App: React.FC = () => (
   <ThemeProvider theme={dark}>
     <ToastContainer autoClose={2000} position="top-right" />
