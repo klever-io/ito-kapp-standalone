@@ -1,6 +1,7 @@
 const main = {
   title: 'main',
   primary: '#AA33B5',
+  black: '#0B0B1E',
   background: '#000000',
   status: {
     done: '#58925A',
@@ -9,7 +10,7 @@ const main = {
   },
   white: '#fff',
   card: {
-    background: '#3D3F70',
+    background: '#363864',
     border: '#676aac',
   },
   header: {
@@ -21,6 +22,20 @@ const main = {
   },
   address: {
     background: 'rgb(100, 102, 147)',
+  },
+  pagination: {
+    active: '#7D3FF1',
+  },
+  footer: {
+    background: '#0B0B1E',
+
+    socialBorder: '#2c3041',
+
+    hover: '#aa33b5',
+    text: '#9b9dd1',
+  },
+  assetCard: {
+    background: '#24264f',
   },
 };
 
