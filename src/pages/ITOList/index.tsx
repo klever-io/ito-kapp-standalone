@@ -1,11 +1,11 @@
-import Header from 'components/Header';
+import HeaderPage from 'components/HeaderPage';
 import { Container } from 'pages/styles';
 
 const ITOList: React.FC = () => {
   return (
     <>
       <Container>
-        <Header>ITOs</Header>
+        <HeaderPage>ITOs</HeaderPage>
       </Container>
     </>
   );

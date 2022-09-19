@@ -1,20 +1,26 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  span {
-    font-size: 1.6rem;
-    color: #fff;
-    padding: 0.3rem;
-    font-weight: 500;
-    user-select: none;
-  }
+  padding: 1rem 2rem;
+  background-color: ${props => props.theme.header.background};
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
 
-  div {
-    width: 100%;
-    height: 0.05rem;
-    background-color: #fff;
-    margin-top: 1rem;
-    opacity: 0.8;
-    border-radius: 1rem;
+  @media (max-width: 768px) {
+    justify-content: center;
   }
+`;
+
+export const AddressContainer = styled.div`
+  cursor: pointer;
+  background-color: ${props => props.theme.address.background};
+  min-width: 10rem;
+  display: flex;
+  text-align: center;
+  padding: 0.5rem 1.8rem;
+  border-radius: 0.4rem;
+  color: white;
+  font-size: 0.9rem;
 `;

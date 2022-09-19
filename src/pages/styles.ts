@@ -8,14 +8,13 @@ export const Container = styled.div`
   max-width: 1000px;
 
   height: 100%;
-  /* background-color: red; */
 `;
 
 export const Title = styled.h1`
   width: fit-content;
   font-size: 1.5rem;
   font-weight: 400;
-  color: #fff;
+  color: ${props => props.theme.white};
 `;
 
 export const Network = styled.div`

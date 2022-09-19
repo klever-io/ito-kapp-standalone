@@ -1,31 +1,31 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-import Login from '../pages/Login';
 import ITOList from 'pages/ITOList';
+import Header from 'components/Header';
 
-interface IProtected {
+interface IGenericPage {
   children: any;
 }
 
-const ProtectedRoute: React.FC<IProtected> = ({ children }) => {
-  if (!window.kleverWeb?.address) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
+const Page: React.FC<IGenericPage> = ({ children }) => {
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 };
 
 const Router: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
         <Route
-          path="/ito"
+          path="/"
           element={
-            <ProtectedRoute>
+            <Page>
               <ITOList />
-            </ProtectedRoute>
+            </Page>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
