@@ -23,3 +23,11 @@ export const asyncDoIf = async (
   failure();
   return;
 };
+
+export const parseCamelCase = (str: string) =>
+  str.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
+    return str.toUpperCase();
+  });
+
+export const isObject = (element: any): boolean =>
+  typeof element === 'object' && !Array.isArray(element) && element !== null;

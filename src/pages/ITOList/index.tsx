@@ -5,6 +5,7 @@ import { Container } from 'pages/styles';
 import api from 'services/api';
 import Pagination from 'components/Pagination';
 import Loader from 'components/Loader';
+import AssetModal from 'components/Modals/Asset';
 import {
   AssetContainer,
   AssetsList,
@@ -33,6 +34,7 @@ const ITOList: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [filterByOwner, setFilterByOwner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
+  const [selectedAsset, setSelectedAsset] = useState<IAsset | undefined>();
 
   const getAssets = useCallback(
     async (justByOwner?: boolean) => {
@@ -73,14 +75,20 @@ const ITOList: React.FC = () => {
     getAssets();
   }, [page]);
 
-  useEffect(() => {
+  const getAddress = async () => {
     try {
-      (async () => {
+      const address = await window.kleverWeb.getWalletAddress();
+
+      if (address.length > 0) {
         setWalletAddress(await window.kleverWeb.getWalletAddress());
-      })();
+      }
     } catch (e) {
       console.error(e);
     }
+  };
+
+  useEffect(() => {
+    getAddress();
   }, [walletAddress]);
 
   const assetsTable = () => {
@@ -98,7 +106,7 @@ const ITOList: React.FC = () => {
                   <span>{item.circulatingSupply}</span>
                 </SupplyContent>
                 <ButtonsContent>
-                  <DetailsButton>
+                  <DetailsButton onClick={() => setSelectedAsset(item)}>
                     <span>DETAILS</span>
                   </DetailsButton>
                 </ButtonsContent>
@@ -120,19 +128,23 @@ const ITOList: React.FC = () => {
     <>
       <Container>
         <HeaderPage>ITOs</HeaderPage>
+        {selectedAsset && (
+          <AssetModal
+            closeModal={() => setSelectedAsset(undefined)}
+            item={selectedAsset}
+          />
+        )}
         <Filters>
-          {walletAddress && (
-            <FilterContainer
-              clicked={filterByOwner}
-              onClick={() => {
-                getAssets(!filterByOwner);
-                setFilterByOwner(!filterByOwner);
-              }}
-            >
-              <span>Just my assets</span>
-              {filterByOwner && <CloseIcon />}
-            </FilterContainer>
-          )}
+          <FilterContainer
+            clicked={filterByOwner}
+            onClick={() => {
+              getAssets(!filterByOwner);
+              setFilterByOwner(!filterByOwner);
+            }}
+          >
+            <span>Just my assets</span>
+            {filterByOwner && <CloseIcon />}
+          </FilterContainer>
         </Filters>
         {!loading ? (
           <>
