@@ -37,6 +37,9 @@ const main = {
   assetCard: {
     background: '#24264f',
   },
+  form: {
+    input: 'rgb(123, 125, 178)',
+  },
 };
 
 export default main;

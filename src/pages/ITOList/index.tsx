@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router';
 import HeaderPage from 'components/HeaderPage';
 import { IAsset, IResponse } from 'types';
 import { Container } from 'pages/styles';
@@ -16,6 +17,7 @@ import {
   SupplyContent,
   DetailsButton,
   ButtonsContent,
+  CreateITOButton,
   LoadingContainer,
   PaginationContainer,
   FilterContainer,
@@ -28,6 +30,7 @@ export interface IAssetResponse extends IResponse {
 }
 
 const ITOList: React.FC = () => {
+  const navigate = useNavigate();
   const [assets, setAssets] = useState<IAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -143,8 +146,11 @@ const ITOList: React.FC = () => {
             }}
           >
             <span>Just my assets</span>
-            {filterByOwner && <CloseIcon />}
+            {filterByOwner && <CloseIcon size={20} />}
           </FilterContainer>
+          <CreateITOButton onClick={() => navigate('/create-ito')}>
+            <span>CREATE ITO</span>
+          </CreateITOButton>
         </Filters>
         {!loading ? (
           <>

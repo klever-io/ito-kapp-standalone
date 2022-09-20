@@ -110,6 +110,7 @@ export const EmptyList = styled.div`
 export const Filters = styled.div`
   display: flex;
   margin: 1.3rem 0rem;
+  justify-content: space-between;
 `;
 
 export const FilterContainer = styled.div<IFilter>`
@@ -126,6 +127,32 @@ export const FilterContainer = styled.div<IFilter>`
 
   span {
     color: ${({ theme }) => theme.white};
+  }
+`;
+
+export const CreateITOButton = styled.div`
+  user-select: none;
+  cursor: pointer;
+
+  border: 1px solid ${props => props.theme.primary};
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 0.5rem;
+
+  &:hover {
+    background-color: ${props => props.theme.primary};
+
+    span {
+      color: ${props => props.theme.white};
+    }
+  }
+
+  span {
+    color: ${props => props.theme.primary};
+    font-size: 1rem;
   }
 `;
 
