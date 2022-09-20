@@ -1,12 +1,33 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-import Home from '../pages/Home/';
+import ITOList from 'pages/ITOList';
+import Header from 'components/Header';
+
+interface IGenericPage {
+  children: any;
+}
+
+const Page: React.FC<IGenericPage> = ({ children }) => {
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
+};
 
 const Router: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <Page>
+              <ITOList />
+            </Page>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
