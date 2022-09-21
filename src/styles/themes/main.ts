@@ -1,4 +1,6 @@
 const main = {
+  dark: true,
+  darkText: '#7B7DB2',
   title: 'main',
   primary: '#AA33B5',
   black: '#0B0B1E',
@@ -36,6 +38,9 @@ const main = {
   },
   assetCard: {
     background: '#24264f',
+  },
+  ito: {
+    lightpink: '#ffc0cb',
   },
 };
 

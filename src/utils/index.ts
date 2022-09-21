@@ -1,3 +1,23 @@
+import api from 'services/api';
+import { toast } from 'react-toastify';
+
+export const getPrecision = async (
+  asset: string,
+): Promise<number | undefined> => {
+  if (asset === 'KLV' || asset === 'KFI') return 10 ** 6;
+
+  const response = await api.get({ route: `assets/${asset}` });
+
+  if (response.error) {
+    const messageError =
+      response.error.charAt(0).toUpperCase() + response.error.slice(1);
+    toast.error(messageError);
+    return;
+  }
+
+  return 10 ** response.data.asset.precision;
+};
+
 export const parseAddress = (address: string, maxLen: number): string => {
   return address.length > maxLen
     ? `${address.slice(0, maxLen / 2)}...${address.slice(-(maxLen / 2))}`
