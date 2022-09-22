@@ -8,6 +8,8 @@ export const Container = styled.div`
   align-items: center;
   gap: 0.5rem;
 
+  height: 4rem;
+
   @media (max-width: 768px) {
     justify-content: center;
   }
