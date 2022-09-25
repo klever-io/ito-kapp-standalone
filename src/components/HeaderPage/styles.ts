@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.div``;
+
+export const LabelHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
   span {
     font-size: 1.6rem;
     color: ${props => props.theme.white};
@@ -8,13 +14,35 @@ export const Container = styled.div`
     font-weight: 500;
     user-select: none;
   }
+`;
 
-  div {
-    width: 100%;
-    height: 0.05rem;
-    background-color: ${props => props.theme.white};
-    margin-top: 1rem;
-    opacity: 0.8;
-    border-radius: 1rem;
+export const TitleHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const IconContainer = styled.div`
+  opacity: 0.7;
+  margin-top: 0.2rem;
+  cursor: pointer;
+`;
+
+export const Line = styled.div`
+  width: 100%;
+  height: 0.05rem;
+  background-color: ${props => props.theme.white};
+  margin-top: 1rem;
+  opacity: 0.8;
+  border-radius: 1rem;
+`;
+
+export const Button = styled.div`
+  background-color: ${props => props.theme.primary};
+  border-radius: 0.2rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  span {
+    font-size: 1rem;
   }
 `;

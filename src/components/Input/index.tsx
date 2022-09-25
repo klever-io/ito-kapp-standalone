@@ -1,36 +1,55 @@
-import { InputNormal, InputContainer } from './styles';
-import Toggle from 'react-toggle';
-import 'react-toggle/style.css';
+import {
+  InputNormal,
+  InputContainer,
+  SwitchContainer,
+  Slider,
+  Round,
+  Toggle,
+} from './styles';
 
-interface IInput {
+interface IInput extends React.InputHTMLAttributes<HTMLInputElement> {
+  option1?: string;
+  option2?: string;
   type?: 'number' | 'checkbox' | undefined;
   label: string;
 }
 
-const getInput = (label: string, type?: string) => {
+const getInput = (
+  onChange?: any,
+  type?: string,
+  option1?: string,
+  option2?: string,
+) => {
   switch (type) {
     case 'number':
-      return <InputNormal type="number" />;
+      return <InputNormal type="number" onChange={onChange} />;
 
     case 'checkbox':
       return (
-        <Toggle
-          defaultChecked={false}
-          icons={false}
-          onChange={(e: any) => console.log(e)}
-        />
+        <Toggle>
+          <span>{option1}</span>
+          <SwitchContainer>
+            <input type="checkbox" onChange={onChange} />
+            <Slider>
+              <Round />
+            </Slider>
+          </SwitchContainer>
+          <span>{option2}</span>
+        </Toggle>
       );
 
     default:
-      return <InputNormal />;
+      return <InputNormal onChange={onChange} />;
   }
 };
 
-const Input: React.FC<IInput> = ({ type, label }) => {
+const Input: React.FC<IInput> = props => {
+  const { type, label, option1, option2, onChange } = props;
+
   return (
     <InputContainer>
       <span>{label}</span>
-      {getInput(label, type)}
+      {getInput(onChange, type, option1, option2)}
     </InputContainer>
   );
 };

@@ -1,27 +1,27 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { IAsset, IResponse } from 'types';
-import { Container } from 'pages/styles';
 import api from 'services/api';
-import Pagination from 'components/Pagination';
 import Loader from 'components/Loader';
-import AssetModal from 'components/Modals/Asset';
+import Select from 'react-select';
 import {
   AssetContainer,
   AssetsList,
   IDAsset,
-  Filters,
-  CloseIcon,
+  PackItem,
+  PackContainer,
   EmptyList,
-  SupplyContent,
-  DetailsButton,
-  ButtonsContent,
-  CreateITOButton,
+  ChooseAsset,
+  SideList,
+  MainContainer,
+  ItemsContainer,
+  ITOContent,
+  ITOContainer,
   LoadingContainer,
-  PaginationContainer,
-  FilterContainer,
 } from './styles';
+import { useWidth } from 'contexts/width';
+import { useNavigate } from 'react-router';
+import { getPrecision } from 'utils';
 
 export interface IAssetResponse extends IResponse {
   data: {
@@ -30,53 +30,101 @@ export interface IAssetResponse extends IResponse {
 }
 
 const ITOList: React.FC = () => {
+  const width = useWidth();
   const navigate = useNavigate();
   const [assets, setAssets] = useState<IAsset[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [filterByOwner, setFilterByOwner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [selectedAsset, setSelectedAsset] = useState<IAsset | undefined>();
+  const [assetsOptions, setAssetsOption] = useState<any[]>([]);
 
-  const getAssets = useCallback(
-    async (justByOwner?: boolean) => {
-      setAssets([]);
-      setLoading(true);
-      const response: IAssetResponse = await api.get({
-        route: `assets/kassets`,
-        query: {
-          owner: justByOwner ? walletAddress : '',
-          page,
-        },
-      });
+  const getOtherAssets = async (
+    auxAssets: IAsset[],
+    totalPages: number,
+    justByOwner?: boolean,
+  ) => {
+    const options: any[] = [];
 
-      if (response.error) {
-        return;
+    for (const x of Array(totalPages).keys()) {
+      if (x !== 0) {
+        const response: IAssetResponse = await api.get({
+          route: `assets/kassets`,
+          query: {
+            owner: justByOwner ? walletAddress : '',
+            page: x,
+          },
+        });
+
+        if (response.error) {
+          return;
+        }
+
+        response.data.assets.forEach(asset => {
+          if (asset.ito) {
+            asset.ito.packData.forEach(async (item: any, index1: number) => {
+              const precision = await getPrecision(item.key);
+              if (precision) {
+                item.packs.forEach((pack: any, index2: number) => {
+                  if (asset.ito) {
+                    asset.ito.packData[index1].packs[index2].price =
+                      pack.price / precision;
+                  }
+                });
+              }
+            });
+            auxAssets.push(asset);
+            options.push({ value: asset, label: asset.assetId });
+          }
+        });
       }
+    }
+    setLoading(false);
+    setAssets(auxAssets);
+    setAssetsOption([...options]);
+  };
 
-      const auxAssets: IAsset[] = [];
+  const getAssets = async (justByOwner?: boolean) => {
+    setLoading(true);
+    setSelectedAsset(undefined);
+    const response: IAssetResponse = await api.get({
+      route: `assets/kassets`,
+      query: {
+        owner: justByOwner ? walletAddress : '',
+      },
+    });
 
-      response.data.assets.forEach((asset: any) => {
+    if (response.error) {
+      return;
+    }
+
+    const auxAssets: IAsset[] = [];
+    const options: any[] = [];
+
+    response.data.assets.forEach(asset => {
+      if (asset.ito) {
+        asset.ito.packData.forEach(async (item: any, index1: number) => {
+          const precision = await getPrecision(item.key);
+          if (precision) {
+            item.packs.forEach((pack: any, index2: number) => {
+              if (asset.ito) {
+                asset.ito.packData[index1].packs[index2].price =
+                  pack.price / precision;
+              }
+            });
+          }
+        });
         auxAssets.push(asset);
-      });
+        options.push({ value: asset, label: asset.assetId });
+      }
+    });
 
-      setAssets(auxAssets);
-      setPage(
-        response.pagination.next !== response.pagination.previous
-          ? response.pagination.next - 1
-          : response.pagination.next,
-      );
-      setTotalPages(response.pagination.totalPages);
-
-      setLoading(false);
-    },
-    [page],
-  );
+    setAssetsOption([...options]);
+    getOtherAssets(auxAssets, response.pagination.totalPages, justByOwner);
+  };
 
   useEffect(() => {
     getAssets();
-  }, [page]);
+  }, []);
 
   const getAddress = async () => {
     try {
@@ -100,19 +148,11 @@ const ITOList: React.FC = () => {
         <>
           {assets.map((item: IAsset) => {
             return (
-              <AssetContainer>
+              <AssetContainer onClick={() => setSelectedAsset(item)}>
                 <IDAsset>
                   <span>{item.assetId}</span>
                   <span>{item.assetType}</span>
                 </IDAsset>
-                <SupplyContent>
-                  <span>{item.circulatingSupply}</span>
-                </SupplyContent>
-                <ButtonsContent>
-                  <DetailsButton onClick={() => setSelectedAsset(item)}>
-                    <span>DETAILS</span>
-                  </DetailsButton>
-                </ButtonsContent>
               </AssetContainer>
             );
           })}
@@ -127,65 +167,87 @@ const ITOList: React.FC = () => {
     );
   };
 
-  return (
-    <>
-      <Container>
-        <HeaderPage>ITOs</HeaderPage>
-        {selectedAsset && (
-          <AssetModal
-            closeModal={() => setSelectedAsset(undefined)}
-            item={selectedAsset}
+  const displaySelect = () => {
+    if (width.width <= 768) {
+      if (!loading)
+        return (
+          <Select
+            options={assetsOptions}
+            onChange={e => setSelectedAsset(e.value)}
           />
-        )}
-        <Filters>
-          <FilterContainer
-            clicked={filterByOwner}
-            onClick={() => {
-              getAssets(!filterByOwner);
-              setFilterByOwner(!filterByOwner);
-            }}
-          >
-            <span>Just my assets</span>
-            {filterByOwner && <CloseIcon size={20} />}
-          </FilterContainer>
-          <CreateITOButton onClick={() => navigate('/create-ito')}>
-            <span>CREATE ITO</span>
-          </CreateITOButton>
-        </Filters>
-        {!loading ? (
-          <>
-            <AssetsList>
-              <AssetContainer>
-                <IDAsset>
-                  <span>ID</span>
-                </IDAsset>
-                <SupplyContent>
-                  <span>Circulating Supply</span>
-                </SupplyContent>
-              </AssetContainer>
-              {assetsTable()}
-            </AssetsList>
-            {totalPages && page !== 0 && (
-              <PaginationContainer>
-                <Pagination
-                  count={totalPages}
-                  page={page}
-                  onPaginate={(page: any) => {
-                    if (setPage) {
-                      setPage(page + 1);
-                    }
-                  }}
-                />
-              </PaginationContainer>
-            )}
-          </>
-        ) : (
+        );
+      else
+        return (
           <LoadingContainer>
             <Loader />
           </LoadingContainer>
-        )}
-      </Container>
-    </>
+        );
+    }
+
+    return <></>;
+  };
+
+  return (
+    <MainContainer>
+      {width.width > 768 && (
+        <SideList>
+          {!loading ? (
+            <AssetsList>{assetsTable()}</AssetsList>
+          ) : (
+            <LoadingContainer>
+              <Loader />
+            </LoadingContainer>
+          )}
+        </SideList>
+      )}
+      <ITOContainer>
+        <HeaderPage
+          refresh={getAssets}
+          button={'Create ITO'}
+          onPressButton={() => navigate('/create-ito')}
+        >
+          ITOs
+        </HeaderPage>
+        {displaySelect()}
+        <ITOContent>
+          <div>
+            {selectedAsset ? (
+              <>
+                {selectedAsset?.ito?.packData.map((item: any) => {
+                  return (
+                    <PackContainer>
+                      <span>{item.key}</span>
+                      <ItemsContainer>
+                        {item.packs.map((pack: any) => {
+                          return (
+                            <PackItem>
+                              <p>
+                                {pack.amount} {selectedAsset.ticker}
+                              </p>
+                              <p>
+                                {pack.price} {item.key}
+                              </p>
+                            </PackItem>
+                          );
+                        })}
+                      </ItemsContainer>
+                    </PackContainer>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {!loading && (
+                  <ChooseAsset>
+                    <span>Choose an asset</span>
+                  </ChooseAsset>
+                )}
+              </>
+            )}
+          </div>
+        </ITOContent>
+      </ITOContainer>
+    </MainContainer>
   );
 };
 
