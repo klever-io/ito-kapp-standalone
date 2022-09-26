@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { Container } from 'pages/styles';
 import Input from 'components/Input';
@@ -33,6 +33,10 @@ const CreateITO: React.FC = () => {
   const [status, setStatus] = useState(false);
   const [maxAmount, setMaxAmount] = useState(0);
 
+  useEffect(() => {
+    setAddress(window.kleverWeb.getWalletAddress());
+  }, [address]);
+
   const addPack = () => {
     const packsList = [...packs];
     packsList.push({ label: '', packItems: [{ amount: 0, price: 0 }] });
@@ -60,21 +64,20 @@ const CreateITO: React.FC = () => {
   const parsePackInfo = () => {
     const newPackInfo = {};
     packs.forEach((pack: IPack) => {
-      newPackInfo[pack.label] = { packItems: [] };
+      newPackInfo[pack.label] = { packs: [] };
       pack.packItems.forEach((item: IPackItems) => {
-        newPackInfo[pack.label].packItems.push({
+        newPackInfo[pack.label].packs.push({
           amount: item.amount,
           price: item.price,
         });
       });
     });
-
     return newPackInfo;
   };
 
   const handleSubmit = async () => {
     const parsedValues: any = {
-      assetID,
+      kda: assetID,
       receiverAddress: address,
       status: status ? 1 : 0,
       maxAmount,
@@ -119,6 +122,7 @@ const CreateITO: React.FC = () => {
               <Input
                 label="Address"
                 onChange={e => setAddress(e.target.value)}
+                defaultValue={address}
               />
               <Input
                 label="Status"

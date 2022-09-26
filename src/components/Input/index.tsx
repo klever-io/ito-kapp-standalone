@@ -8,6 +8,7 @@ import {
 } from './styles';
 
 interface IInput extends React.InputHTMLAttributes<HTMLInputElement> {
+  defaultValue?: string | number;
   option1?: string;
   option2?: string;
   type?: 'number' | 'checkbox' | undefined;
@@ -19,6 +20,7 @@ const getInput = (
   type?: string,
   option1?: string,
   option2?: string,
+  defaultValue?: string | number,
 ) => {
   switch (type) {
     case 'number':
@@ -39,17 +41,19 @@ const getInput = (
       );
 
     default:
+      if (defaultValue)
+        return <InputNormal onChange={onChange} defaultValue={defaultValue} />;
       return <InputNormal onChange={onChange} />;
   }
 };
 
 const Input: React.FC<IInput> = props => {
-  const { type, label, option1, option2, onChange } = props;
+  const { type, label, option1, option2, onChange, defaultValue } = props;
 
   return (
     <InputContainer>
       <span>{label}</span>
-      {getInput(onChange, type, option1, option2)}
+      {getInput(onChange, type, option1, option2, defaultValue)}
     </InputContainer>
   );
 };

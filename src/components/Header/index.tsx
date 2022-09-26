@@ -11,9 +11,10 @@ const Header: React.FC = () => {
   const connectWallet = async (silent?: boolean) => {
     try {
       const address = await window.kleverWeb.getWalletAddress();
-
       if (address.length > 0) {
         setWalletAddress(address);
+      } else {
+        handleConnect(silent);
       }
     } catch (e) {
       handleConnect(silent);
@@ -53,8 +54,8 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
-    connectWallet(true);
-  }, [walletAddress]);
+    connectWallet(false);
+  }, []);
 
   return (
     <Container>
