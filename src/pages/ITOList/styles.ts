@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+interface IAsset {
+  selected?: boolean;
+}
+
 export const MainContainer = styled.div`
   display: flex;
   align-items: flex-start;
@@ -20,9 +24,9 @@ export const AssetsList = styled.div`
   flex-direction: column;
 `;
 
-export const AssetContainer = styled.div`
+export const AssetContainer = styled.div<IAsset>`
   cursor: pointer;
-  background-color: #222345;
+  background-color: ${props => (props.selected ? '#16162c' : '#222345')};
   span {
     text-align: center;
     color: ${props => props.theme.white};

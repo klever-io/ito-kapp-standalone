@@ -147,7 +147,10 @@ const ITOList: React.FC = () => {
         <>
           {assets.map((item: IAsset) => {
             return (
-              <AssetContainer onClick={() => setSelectedAsset(item)}>
+              <AssetContainer
+                selected={selectedAsset === item}
+                onClick={() => setSelectedAsset(item)}
+              >
                 <IDAsset>
                   <span>{item.assetId}</span>
                   <span>{item.assetType}</span>
