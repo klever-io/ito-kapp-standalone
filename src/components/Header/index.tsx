@@ -25,10 +25,10 @@ const Header: React.FC = () => {
     if (!walletAddress) {
       window.kleverWeb.provider = {
         api:
-          process.env.DEFAULT_API_HOST ||
+          process.env.REACT_APP_DEFAULT_API_HOST ||
           'https://api.testnet.klever.finance/v1.0',
         node:
-          process.env.DEFAULT_NODE_HOST ||
+          process.env.REACT_APP_DEFAULT_NODE_HOST ||
           'https://node.testnet.klever.finance',
       };
 

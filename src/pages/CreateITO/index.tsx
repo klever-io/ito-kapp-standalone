@@ -37,6 +37,17 @@ const CreateITO: React.FC = () => {
     setAddress(window.kleverWeb.getWalletAddress());
   }, [address]);
 
+  useEffect(() => {
+    window.kleverWeb.provider = {
+      api:
+        process.env.REACT_APP_DEFAULT_API_HOST ||
+        'https://api.testnet.klever.finance/v1.0',
+      node:
+        process.env.REACT_APP_DEFAULT_NODE_HOST ||
+        'https://node.testnet.klever.finance',
+    };
+  }, []);
+
   const addPack = () => {
     const packsList = [...packs];
     packsList.push({ label: '', packItems: [{ amount: 0, price: 0 }] });
