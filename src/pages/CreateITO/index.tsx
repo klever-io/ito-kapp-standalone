@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { Container } from 'pages/styles';
@@ -14,6 +15,7 @@ import {
   Button,
   ButtonsContainer,
 } from './styles';
+import { getPrecision } from 'utils';
 
 interface IPackItems {
   amount: number;
@@ -74,12 +76,13 @@ const CreateITO: React.FC = () => {
 
   const parsePackInfo = () => {
     const newPackInfo = {};
-    packs.forEach((pack: IPack) => {
+    packs.forEach(async (pack: IPack) => {
       newPackInfo[pack.label] = { packs: [] };
-      pack.packItems.forEach((item: IPackItems) => {
+      const precision = await getPrecision(pack.label);
+      pack.packItems.forEach(async (item: IPackItems) => {
         newPackInfo[pack.label].packs.push({
           amount: item.amount,
-          price: item.price,
+          price: precision ? item.price * precision : item.price,
         });
       });
     });
@@ -99,24 +102,26 @@ const CreateITO: React.FC = () => {
       ...parsedValues,
     };
 
-    try {
-      const unsignedTx = await core.buildTransaction(
-        [
-          {
-            type: 15, // Config ITO type
-            payload: parsedPayload,
-          },
-        ],
-        [''],
-      );
-      const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
-      await core.broadcastTransactions([signedTx]);
-      toast.success('Transaction broadcast successfully');
-      navigate('/');
-    } catch (e: any) {
-      console.log(`%c ${e}`, 'color: red');
-      toast.error(e.message ? e.message : e);
-    }
+    console.log(parsedPayload);
+
+    // try {
+    //   const unsignedTx = await core.buildTransaction(
+    //     [
+    //       {
+    //         type: 15, // Config ITO type
+    //         payload: parsedPayload,
+    //       },
+    //     ],
+    //     [''],
+    //   );
+    //   const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
+    //   await core.broadcastTransactions([signedTx]);
+    //   toast.success('Transaction broadcast successfully');
+    //   navigate('/');
+    // } catch (e: any) {
+    //   console.log(`%c ${e}`, 'color: red');
+    //   toast.error(e.message ? e.message : e);
+    // }
   };
 
   return (
