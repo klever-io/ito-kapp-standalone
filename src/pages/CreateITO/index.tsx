@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { Container } from 'pages/styles';
@@ -102,26 +101,24 @@ const CreateITO: React.FC = () => {
       ...parsedValues,
     };
 
-    console.log(parsedPayload);
-
-    // try {
-    //   const unsignedTx = await core.buildTransaction(
-    //     [
-    //       {
-    //         type: 15, // Config ITO type
-    //         payload: parsedPayload,
-    //       },
-    //     ],
-    //     [''],
-    //   );
-    //   const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
-    //   await core.broadcastTransactions([signedTx]);
-    //   toast.success('Transaction broadcast successfully');
-    //   navigate('/');
-    // } catch (e: any) {
-    //   console.log(`%c ${e}`, 'color: red');
-    //   toast.error(e.message ? e.message : e);
-    // }
+    try {
+      const unsignedTx = await core.buildTransaction(
+        [
+          {
+            type: 15, // Config ITO type
+            payload: parsedPayload,
+          },
+        ],
+        [''],
+      );
+      const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
+      await core.broadcastTransactions([signedTx]);
+      toast.success('Transaction broadcast successfully');
+      navigate('/');
+    } catch (e: any) {
+      console.log(`%c ${e}`, 'color: red');
+      toast.error(e.message ? e.message : e);
+    }
   };
 
   return (
