@@ -18,6 +18,7 @@ import {
   ITOContent,
   ITOContainer,
   LoadingContainer,
+  MainContent,
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { getPrecision } from 'utils';
@@ -146,7 +147,10 @@ const ITOList: React.FC = () => {
         <>
           {assets.map((item: IAsset) => {
             return (
-              <AssetContainer onClick={() => setSelectedAsset(item)}>
+              <AssetContainer
+                selected={selectedAsset === item}
+                onClick={() => setSelectedAsset(item)}
+              >
                 <IDAsset>
                   <span>{item.assetId}</span>
                   <span>{item.assetType}</span>
@@ -187,57 +191,59 @@ const ITOList: React.FC = () => {
 
   return (
     <MainContainer>
-      {width.width > 768 && (
-        <SideList>
-          {!loading ? (
-            <AssetsList>{assetsTable()}</AssetsList>
-          ) : (
-            <LoadingContainer>
-              <Loader />
-            </LoadingContainer>
-          )}
-        </SideList>
-      )}
       <ITOContainer>
         <HeaderPage refresh={getAssets}>ITOs</HeaderPage>
-        {displaySelect()}
-        <ITOContent>
-          <div>
-            {selectedAsset ? (
-              <>
-                {selectedAsset?.ito?.packData.map((item: any) => {
-                  return (
-                    <PackContainer>
-                      <span>{item.key}</span>
-                      <ItemsContainer>
-                        {item.packs.map((pack: any) => {
-                          return (
-                            <PackItem>
-                              <p>
-                                {pack.amount} {selectedAsset.ticker}
-                              </p>
-                              <p>
-                                {pack.price} {item.key}
-                              </p>
-                            </PackItem>
-                          );
-                        })}
-                      </ItemsContainer>
-                    </PackContainer>
-                  );
-                })}
-              </>
-            ) : (
-              <>
-                {!loading && (
-                  <ChooseAsset>
-                    <span>Choose an asset</span>
-                  </ChooseAsset>
-                )}
-              </>
-            )}
-          </div>
-        </ITOContent>
+        <MainContent>
+          {width.width > 768 && (
+            <SideList>
+              {!loading ? (
+                <AssetsList>{assetsTable()}</AssetsList>
+              ) : (
+                <LoadingContainer>
+                  <Loader />
+                </LoadingContainer>
+              )}
+            </SideList>
+          )}
+          {displaySelect()}
+          <ITOContent>
+            <div>
+              {selectedAsset ? (
+                <>
+                  {selectedAsset?.ito?.packData.map((item: any) => {
+                    return (
+                      <PackContainer>
+                        <span>{item.key}</span>
+                        <ItemsContainer>
+                          {item.packs.map((pack: any) => {
+                            return (
+                              <PackItem>
+                                <p>
+                                  {pack.amount} {selectedAsset.ticker}
+                                </p>
+                                <p>
+                                  {pack.price} {item.key}
+                                </p>
+                              </PackItem>
+                            );
+                          })}
+                        </ItemsContainer>
+                      </PackContainer>
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  {!loading && (
+                    <ChooseAsset>
+                      <span>Choose an asset</span>
+                    </ChooseAsset>
+                  )}
+                </>
+              )}
+            </div>
+          </ITOContent>
+        </MainContent>
       </ITOContainer>
     </MainContainer>
   );
