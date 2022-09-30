@@ -14,6 +14,7 @@ import {
   Button,
   ButtonsContainer,
 } from './styles';
+import { getPrecision } from 'utils';
 
 interface IPackItems {
   amount: number;
@@ -74,12 +75,13 @@ const CreateITO: React.FC = () => {
 
   const parsePackInfo = () => {
     const newPackInfo = {};
-    packs.forEach((pack: IPack) => {
+    packs.forEach(async (pack: IPack) => {
       newPackInfo[pack.label] = { packs: [] };
-      pack.packItems.forEach((item: IPackItems) => {
+      const precision = await getPrecision(pack.label);
+      pack.packItems.forEach(async (item: IPackItems) => {
         newPackInfo[pack.label].packs.push({
           amount: item.amount,
-          price: item.price,
+          price: precision ? item.price * precision : item.price,
         });
       });
     });

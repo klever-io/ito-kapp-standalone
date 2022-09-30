@@ -20,6 +20,7 @@ import {
   ITOContent,
   ITOContainer,
   LoadingContainer,
+  MainContent,
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
@@ -225,17 +226,6 @@ const ITOList: React.FC = () => {
 
   return (
     <MainContainer>
-      {width.width > 768 && (
-        <SideList>
-          {!loading ? (
-            assetsTable()
-          ) : (
-            <LoadingContainer>
-              <Loader />
-            </LoadingContainer>
-          )}
-        </SideList>
-      )}
       <ITOContainer>
         <HeaderPage
           refresh={getAssets}
@@ -244,44 +234,57 @@ const ITOList: React.FC = () => {
         >
           ITOs
         </HeaderPage>
-        {displaySelect()}
-        <ITOContent>
-          <div>
-            {selectedAsset ? (
-              <>
-                {selectedAsset?.ito?.packData.map((item: any) => {
-                  return (
-                    <PackContainer>
-                      <span>{item.key}</span>
-                      <ItemsContainer>
-                        {item.packs.map((pack: any) => {
-                          return (
-                            <PackItem>
-                              <p>
-                                {pack.amount} {selectedAsset.ticker}
-                              </p>
-                              <p>
-                                {pack.price} {item.key}
-                              </p>
-                            </PackItem>
-                          );
-                        })}
-                      </ItemsContainer>
-                    </PackContainer>
-                  );
-                })}
-              </>
-            ) : (
-              <>
-                {!loading && (
-                  <ChooseAsset>
-                    <span>Choose an asset</span>
-                  </ChooseAsset>
-                )}
-              </>
-            )}
-          </div>
-        </ITOContent>
+        <MainContent>
+          {width.width > 768 && (
+            <SideList>
+              {!loading ? (
+                <AssetsList>{assetsTable()}</AssetsList>
+              ) : (
+                <LoadingContainer>
+                  <Loader />
+                </LoadingContainer>
+              )}
+            </SideList>
+          )}
+          {displaySelect()}
+          <ITOContent>
+            <div>
+              {selectedAsset ? (
+                <>
+                  {selectedAsset?.ito?.packData.map((item: any) => {
+                    return (
+                      <PackContainer>
+                        <span>{item.key}</span>
+                        <ItemsContainer>
+                          {item.packs.map((pack: any) => {
+                            return (
+                              <PackItem>
+                                <p>
+                                  {pack.amount} {selectedAsset.ticker}
+                                </p>
+                                <p>
+                                  {pack.price} {item.key}
+                                </p>
+                              </PackItem>
+                            );
+                          })}
+                        </ItemsContainer>
+                      </PackContainer>
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  {!loading && (
+                    <ChooseAsset>
+                      <span>Choose an asset</span>
+                    </ChooseAsset>
+                  )}
+                </>
+              )}
+            </div>
+          </ITOContent>
+        </MainContent>
       </ITOContainer>
     </MainContainer>
   );

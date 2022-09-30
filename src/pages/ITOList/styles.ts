@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 
+interface IAsset {
+  selected?: boolean;
+}
+
 export const MainContainer = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: row;
+  padding: 0rem 1rem;
 `;
 
 export const SideList = styled.div`
@@ -27,10 +32,9 @@ export const ScrollList = styled.div`
   flex-direction: column;
 `;
 
-export const AssetContainer = styled.div`
+export const AssetContainer = styled.div<IAsset>`
   cursor: pointer;
-  background-color: ${props => props.theme.card.background};
-
+  background-color: ${props => (props.selected ? '#16162c' : '#222345')};
   span {
     text-align: center;
     color: ${props => props.theme.white};
@@ -40,7 +44,7 @@ export const AssetContainer = styled.div`
     }
   }
 
-  border-radius: 1rem;
+  border-radius: 0.3rem;
   padding: 1rem 0.5rem;
 
   display: flex;
@@ -56,12 +60,22 @@ export const ITOContainer = styled.div`
   user-select: none;
 `;
 
+export const MainContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.7rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
 export const ITOContent = styled.div`
   width: 100%;
 `;
 
 export const PackContainer = styled.div`
-  background-color: #222345;
+  background-color: #16162c;
   width: 100%;
   padding: 1rem 3rem;
   border-radius: 0.8rem;
@@ -92,21 +106,20 @@ export const ChooseAsset = styled.div`
 
 export const ItemsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(50px, 1fr));
+  grid-template-columns: repeat(3, minmax(50px, 1fr));
   grid-gap: 1rem;
 `;
 
 export const PackItem = styled.div`
-  background-color: #333568;
-  border-radius: 0.1rem;
-  padding: 0.5rem;
+  background-color: #222345;
+  padding: 1rem 0.5rem;
 
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 
-  border-radius: 0.7rem;
+  border-radius: 0.3rem;
   gap: 0.3rem;
 
   p {
