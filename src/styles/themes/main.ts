@@ -42,6 +42,9 @@ const main = {
   ito: {
     lightpink: '#ffc0cb',
   },
+  form: {
+    input: 'rgb(123, 125, 178)',
+  },
 };
 
 export default main;

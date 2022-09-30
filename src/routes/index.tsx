@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import ITOList from 'pages/ITOList';
+import CreateITO from 'pages/CreateITO';
 import Header from 'components/Header';
 
 interface IGenericPage {
@@ -25,6 +26,14 @@ const Router: React.FC = () => {
           element={
             <Page>
               <ITOList />
+            </Page>
+          }
+        />
+        <Route
+          path="/create-ito"
+          element={
+            <Page>
+              <CreateITO />
             </Page>
           }
         />

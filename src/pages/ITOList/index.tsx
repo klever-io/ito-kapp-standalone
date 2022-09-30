@@ -21,6 +21,7 @@ import {
   MainContent,
 } from './styles';
 import { useWidth } from 'contexts/width';
+import { useNavigate } from 'react-router';
 import { getPrecision } from 'utils';
 
 export interface IAssetResponse extends IResponse {
@@ -31,6 +32,7 @@ export interface IAssetResponse extends IResponse {
 
 const ITOList: React.FC = () => {
   const width = useWidth();
+  const navigate = useNavigate();
   const [assets, setAssets] = useState<IAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [walletAddress, setWalletAddress] = useState('');
@@ -192,7 +194,13 @@ const ITOList: React.FC = () => {
   return (
     <MainContainer>
       <ITOContainer>
-        <HeaderPage refresh={getAssets}>ITOs</HeaderPage>
+        <HeaderPage
+          refresh={getAssets}
+          button={'Create ITO'}
+          onPressButton={() => navigate('/create-ito')}
+        >
+          ITOs
+        </HeaderPage>
         <MainContent>
           {width.width > 768 && (
             <SideList>

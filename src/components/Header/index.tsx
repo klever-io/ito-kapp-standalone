@@ -11,9 +11,10 @@ const Header: React.FC = () => {
   const connectWallet = async (silent?: boolean) => {
     try {
       const address = await window.kleverWeb.getWalletAddress();
-
       if (address.length > 0) {
         setWalletAddress(address);
+      } else {
+        handleConnect(silent);
       }
     } catch (e) {
       handleConnect(silent);
@@ -24,10 +25,10 @@ const Header: React.FC = () => {
     if (!walletAddress) {
       window.kleverWeb.provider = {
         api:
-          process.env.DEFAULT_API_HOST ||
+          process.env.REACT_APP_DEFAULT_API_HOST ||
           'https://api.testnet.klever.finance/v1.0',
         node:
-          process.env.DEFAULT_NODE_HOST ||
+          process.env.REACT_APP_DEFAULT_NODE_HOST ||
           'https://node.testnet.klever.finance',
       };
 
@@ -53,8 +54,8 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
-    connectWallet(true);
-  }, [walletAddress]);
+    connectWallet(false);
+  }, []);
 
   return (
     <Container>

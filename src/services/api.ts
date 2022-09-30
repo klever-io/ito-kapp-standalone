@@ -38,9 +38,11 @@ export const getHost = (
 ): string => {
   const hostService = {
     [Service.PROXY]:
-      process.env.DEFAULT_API_HOST || 'https://api.testnet.klever.finance',
+      process.env.REACT_APP_DEFAULT_API_HOST ||
+      'https://api.testnet.klever.finance',
     [Service.NODE]:
-      process.env.DEFAULT_NODE_HOST || 'https://node.testnet.klever.finance',
+      process.env.REACT_APP_DEFAULT_NODE_HOST ||
+      'https://node.testnet.klever.finance',
   };
 
   let host = hostService[service || 0];
