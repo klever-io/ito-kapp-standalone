@@ -24,7 +24,7 @@ export const AssetsList = styled.div`
 `;
 
 export const ScrollList = styled.div`
-  height: calc(100vh - 12rem);
+  height: calc(100vh - 18rem);
   padding: 0rem 0.2rem;
   overflow: scroll;
   gap: 0.7rem;
