@@ -81,3 +81,38 @@ export const Toggle = styled.div`
     font-size: 0.8rem;
   }
 `;
+
+export const customSelectStyles = {
+  option: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: '#363864',
+    color: state.isSelected ? 'white' : '#7B7DB2',
+    padding: 13,
+  }),
+  control: () => ({
+    backgroundColor: '#363864',
+    color: 'white',
+    borderRadius: '0.3rem',
+    display: 'flex',
+    paddingLeft: 10,
+  }),
+  singleValue: (provided: any, state: any) => {
+    const opacity = state.isDisabled ? 0.5 : 1;
+    const transition = 'opacity 300ms';
+
+    return { ...provided, opacity, transition, color: 'white' };
+  },
+  menuList: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: '#363864',
+    borderRadius: '0.3rem',
+  }),
+  menu: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: '#363864',
+  }),
+  input: (provided: any, state: any) => ({
+    ...provided,
+    color: 'white',
+  }),
+};
