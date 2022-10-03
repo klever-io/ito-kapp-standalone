@@ -51,3 +51,15 @@ export const parseCamelCase = (str: string) =>
 
 export const isObject = (element: any): boolean =>
   typeof element === 'object' && !Array.isArray(element) && element !== null;
+
+export const isFloat = (value: number) => {
+  if (
+    typeof value === 'number' &&
+    !Number.isNaN(value) &&
+    !Number.isInteger(value)
+  ) {
+    return true;
+  }
+
+  return false;
+};
