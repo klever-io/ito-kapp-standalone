@@ -13,12 +13,20 @@ export const MainContainer = styled.div`
 
 export const SideList = styled.div`
   width: 30rem;
-  height: 70vh;
-  overflow: scroll;
-  padding: 0rem 1rem;
+  height: calc(100vh - 4rem);
+  padding: 1rem 1rem;
 `;
 
 export const AssetsList = styled.div`
+  gap: 0.7rem;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ScrollList = styled.div`
+  height: calc(100vh - 18rem);
+  padding: 0rem 0.2rem;
+  overflow: scroll;
   gap: 0.7rem;
   display: flex;
   flex-direction: column;
