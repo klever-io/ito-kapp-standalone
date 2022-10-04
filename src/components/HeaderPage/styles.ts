@@ -46,3 +46,11 @@ export const Button = styled.div`
     font-size: 1rem;
   }
 `;
+
+export const BackArrow = styled.img`
+  cursor: pointer;
+  margin-right: 0.2rem;
+  margin-top: 0.3rem;
+  filter: invert(99%) sepia(5%) saturate(22%) hue-rotate(285deg)
+    brightness(106%) contrast(100%);
+`;

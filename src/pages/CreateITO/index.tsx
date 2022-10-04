@@ -152,7 +152,7 @@ const CreateITO: React.FC = () => {
   return (
     <>
       <Container>
-        <HeaderPage>Create ITO</HeaderPage>
+        <HeaderPage router={'/'}>Create ITO</HeaderPage>
         <Forms>
           <FormContainer precedence={1}>
             <Form>
