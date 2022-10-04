@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { IAsset, IResponse } from 'types';
@@ -14,6 +15,7 @@ import {
   EmptyList,
   ChooseAsset,
   SideList,
+  ScrollList,
   MainContainer,
   ItemsContainer,
   ITOContent,
@@ -23,7 +25,8 @@ import {
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
-import { getPrecision } from 'utils';
+import { getPrecision, similarity } from 'utils';
+import Input from 'components/Input';
 
 export interface IAssetResponse extends IResponse {
   data: {
@@ -39,6 +42,8 @@ const ITOList: React.FC = () => {
   const [walletAddress, setWalletAddress] = useState('');
   const [selectedAsset, setSelectedAsset] = useState<IAsset | undefined>();
   const [assetsOptions, setAssetsOption] = useState<any[]>([]);
+  const [filteredAssets, setFilteredAssets] = useState<IAsset[]>([]);
+  const [filterLabel, setFilterLabel] = useState('');
 
   const getOtherAssets = async (
     auxAssets: IAsset[],
@@ -82,6 +87,7 @@ const ITOList: React.FC = () => {
     }
     setLoading(false);
     setAssets(auxAssets);
+    setFilteredAssets(auxAssets);
     setAssetsOption([...options]);
   };
 
@@ -144,24 +150,51 @@ const ITOList: React.FC = () => {
     getAddress();
   }, [walletAddress]);
 
+  useEffect(() => {
+    if (filterLabel) {
+      const newFiltered: any[] = [...filteredAssets];
+
+      newFiltered.forEach((item: IAsset) => {
+        item.similarity = similarity(item.assetId, filterLabel);
+      });
+
+      newFiltered.sort((a: any, b: any) => {
+        if (!isNaN(Number(a.similarity)) && !isNaN(Number(b.similarity))) {
+          if (a.similarity > b.similarity) {
+            return -1;
+          } else {
+            return 1;
+          }
+        }
+        return 0;
+      });
+      setFilteredAssets(newFiltered);
+    } else {
+      setFilteredAssets([...assets]);
+    }
+  }, [filterLabel]);
+
   const assetsTable = () => {
     if (assets.length > 0) {
       return (
-        <>
-          {assets.map((item: IAsset) => {
-            return (
-              <AssetContainer
-                selected={selectedAsset === item}
-                onClick={() => setSelectedAsset(item)}
-              >
-                <IDAsset>
-                  <span>{item.assetId}</span>
-                  <span>{item.assetType}</span>
-                </IDAsset>
-              </AssetContainer>
-            );
-          })}
-        </>
+        <AssetsList>
+          <Input
+            placeholder="Search Asset"
+            onChange={e => setFilterLabel(e.target.value)}
+          />
+          <ScrollList>
+            {filteredAssets.map((item: IAsset) => {
+              return (
+                <AssetContainer onClick={() => setSelectedAsset(item)}>
+                  <IDAsset>
+                    <span>{item.assetId}</span>
+                    <span>{item.assetType}</span>
+                  </IDAsset>
+                </AssetContainer>
+              );
+            })}
+          </ScrollList>
+        </AssetsList>
       );
     }
 
