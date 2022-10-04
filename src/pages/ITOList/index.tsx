@@ -10,7 +10,7 @@ import {
   AssetContainer,
   AssetsList,
   IDAsset,
-  PackItem,
+  KeyLabel,
   PackContainer,
   EmptyList,
   ChooseAsset,
@@ -26,6 +26,7 @@ import {
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
 import { getPrecision, similarity } from 'utils';
+import NonFungibleITO from 'components/NonFungileITO';
 import Input from 'components/Input';
 
 export interface IAssetResponse extends IResponse {
@@ -235,18 +236,15 @@ const ITOList: React.FC = () => {
         {selectedAsset?.ito?.packData.map((item: any) => {
           return (
             <PackContainer>
-              <span>{item.key}</span>
+              <KeyLabel>{item.key}</KeyLabel>
               <ItemsContainer>
                 {item.packs.map((pack: any) => {
                   return (
-                    <PackItem>
-                      <p>
-                        {pack.amount} {selectedAsset.ticker}
-                      </p>
-                      <p>
-                        {pack.price} {item.key}
-                      </p>
-                    </PackItem>
+                    <NonFungibleITO
+                      pack={pack}
+                      currencyId={item.key}
+                      selectedAsset={selectedAsset}
+                    />
                   );
                 })}
               </ItemsContainer>

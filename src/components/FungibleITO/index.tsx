@@ -12,8 +12,11 @@ import {
   Row,
 } from './styles';
 import { IAsset, IPack } from 'types';
-import Input from 'components/Input';
 import { isFloat } from 'utils';
+import { core } from '@klever/sdk';
+import { toast } from 'react-toastify';
+import Loader from 'components/Loader';
+import Input from 'components/Input';
 
 interface IFungibleITO {
   asset: IAsset;
@@ -64,7 +67,7 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
     }
   };
 
-  const handleSubmit = (currencyId: string) => {
+  const handleSubmit = async (currencyId: string) => {
     const payload = {
       buyType: 0,
       id: asset.assetId,
@@ -72,7 +75,27 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
       amount: amount,
     };
 
-    console.log(payload);
+    const parsedPayload = {
+      ...payload,
+    };
+
+    try {
+      const unsignedTx = await core.buildTransaction(
+        [
+          {
+            type: 17, // Buy Order type
+            payload: parsedPayload,
+          },
+        ],
+        [''],
+      );
+      const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
+      await core.broadcastTransactions([signedTx]);
+      toast.success('Transaction broadcast successfully');
+    } catch (e: any) {
+      console.log(`%c ${e}`, 'color: red');
+      toast.error(e.message ? e.message : e);
+    }
   };
 
   return (
