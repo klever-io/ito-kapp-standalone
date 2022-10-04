@@ -16,7 +16,8 @@ interface IInput extends React.InputHTMLAttributes<HTMLInputElement> {
   option2?: string;
   dropdownOptions?: any;
   type?: 'number' | 'checkbox' | 'dropdown' | undefined;
-  label: string;
+  label?: string;
+  placeholder?: string;
 }
 
 const getInput = (
@@ -25,6 +26,7 @@ const getInput = (
   option1?: string,
   option2?: string,
   defaultValue?: string | number,
+  placeholder?: string,
   dropdownOptions?: any,
 ) => {
   switch (type) {
@@ -57,7 +59,12 @@ const getInput = (
     default:
       if (defaultValue)
         return <InputNormal onChange={onChange} defaultValue={defaultValue} />;
-      return <InputNormal onChange={onChange} />;
+      return (
+        <InputNormal
+          onChange={onChange}
+          placeholder={placeholder ? placeholder : ''}
+        />
+      );
   }
 };
 
@@ -69,18 +76,20 @@ const Input: React.FC<IInput> = props => {
     option2,
     onChange,
     defaultValue,
+    placeholder,
     dropdownOptions,
   } = props;
 
   return (
     <InputContainer>
-      <span>{label}</span>
+      {label && <span>{label}</span>}
       {getInput(
         onChange,
         type,
         option1,
         option2,
         defaultValue,
+        placeholder,
         dropdownOptions,
       )}
     </InputContainer>

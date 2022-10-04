@@ -85,16 +85,17 @@ export const Toggle = styled.div`
 export const customSelectStyles = {
   option: (provided: any, state: any) => ({
     ...provided,
-    backgroundColor: '#363864',
-    color: state.isSelected ? 'white' : '#7B7DB2',
+    backgroundColor: '',
+    color: state.isSelected ? '#7B7DB2' : 'white',
     padding: 13,
   }),
   control: () => ({
-    backgroundColor: '#363864',
-    color: 'white',
+    backgroundColor: 'rgb(34,35,69)',
+    color: '#7B7DB2',
     borderRadius: '0.3rem',
     display: 'flex',
     paddingLeft: 10,
+    border: '1px solid rgb(123, 125, 178)',
   }),
   singleValue: (provided: any, state: any) => {
     const opacity = state.isDisabled ? 0.5 : 1;
@@ -104,15 +105,16 @@ export const customSelectStyles = {
   },
   menuList: (provided: any, state: any) => ({
     ...provided,
-    backgroundColor: '#363864',
+    backgroundColor: 'rgb(34,35,69)',
     borderRadius: '0.3rem',
   }),
   menu: (provided: any, state: any) => ({
     ...provided,
-    backgroundColor: '#363864',
+    backgroundColor: 'rgb(34,35,69)',
   }),
   input: (provided: any, state: any) => ({
     ...provided,
-    color: 'white',
+    color: '#7B7DB2',
+    height: '1.85rem',
   }),
 };

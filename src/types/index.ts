@@ -52,6 +52,7 @@ export interface IAsset {
       packs: IPack[];
     }[];
   };
+  similarity?: number;
 }
 
 interface IProperties {
