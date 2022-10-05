@@ -101,8 +101,6 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
               <PriceRange>
                 <PriceRangeTitle>Price Range</PriceRangeTitle>
                 {pack.packs.map((packInfo: any, index: number) => {
-                  const initialValue =
-                    index === 0 ? 0 : pack.packs[index - 1].amount;
                   const isLastElement = pack.packs.length === index + 1;
 
                   if (pack.packs.length === 1) {
@@ -120,7 +118,7 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
                         <span>
                           {index === 0
                             ? `0 - ${packInfo.amount}`
-                            : `${pack.packs[0].amount + 1} +`}
+                            : `${pack.packs[0].amount} <`}
                         </span>
                         <span>
                           {packInfo.price} {pack.key} / {asset.ticker}
@@ -139,7 +137,9 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
                         </span>
                       )}
                       {isLastElement && (
-                        <span>{pack.packs[index].amount} +</span>
+                        <span>
+                          {pack.packs[index - 1].amount} {'<'}
+                        </span>
                       )}
                       <span>
                         {packInfo.price} {pack.key} / {asset.ticker}
