@@ -4,6 +4,7 @@ import HeaderPage from 'components/HeaderPage';
 import { IAsset, IResponse } from 'types';
 import api from 'services/api';
 import Loader from 'components/Loader';
+import FungibleITO from 'components/FungibleITO';
 import Select from 'react-select';
 import {
   AssetContainer,
@@ -224,6 +225,38 @@ const ITOList: React.FC = () => {
     return <></>;
   };
 
+  const displayITO = () => {
+    if (selectedAsset?.assetType === 'Fungible') {
+      return <FungibleITO asset={selectedAsset} />;
+    }
+
+    return (
+      <>
+        {selectedAsset?.ito?.packData.map((item: any) => {
+          return (
+            <PackContainer>
+              <span>{item.key}</span>
+              <ItemsContainer>
+                {item.packs.map((pack: any) => {
+                  return (
+                    <PackItem>
+                      <p>
+                        {pack.amount} {selectedAsset.ticker}
+                      </p>
+                      <p>
+                        {pack.price} {item.key}
+                      </p>
+                    </PackItem>
+                  );
+                })}
+              </ItemsContainer>
+            </PackContainer>
+          );
+        })}
+      </>
+    );
+  };
+
   return (
     <MainContainer>
       <ITOContainer>
@@ -250,29 +283,7 @@ const ITOList: React.FC = () => {
           <ITOContent>
             <div>
               {selectedAsset ? (
-                <>
-                  {selectedAsset?.ito?.packData.map((item: any) => {
-                    return (
-                      <PackContainer>
-                        <span>{item.key}</span>
-                        <ItemsContainer>
-                          {item.packs.map((pack: any) => {
-                            return (
-                              <PackItem>
-                                <p>
-                                  {pack.amount} {selectedAsset.ticker}
-                                </p>
-                                <p>
-                                  {pack.price} {item.key}
-                                </p>
-                              </PackItem>
-                            );
-                          })}
-                        </ItemsContainer>
-                      </PackContainer>
-                    );
-                  })}
-                </>
+                displayITO()
               ) : (
                 <>
                   {!loading && (

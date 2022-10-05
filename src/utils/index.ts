@@ -98,3 +98,15 @@ const editDistance = (s1: string, s2: string) => {
   }
   return costs[s2.length];
 };
+
+export const isFloat = (value: number) => {
+  if (
+    typeof value === 'number' &&
+    !Number.isNaN(value) &&
+    !Number.isInteger(value)
+  ) {
+    return true;
+  }
+
+  return false;
+};
