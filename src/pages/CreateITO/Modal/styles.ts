@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { MdClose } from 'react-icons/md';
 
 export const Container = styled.div`
   position: fixed;
@@ -17,6 +18,37 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   background-color: ${props => props.theme.modal.background};
-  height: 200px;
-  width: 300px;
+  width: 50%;
+  border-radius: 0.5rem;
+`;
+
+export const CloseContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-right: 1rem;
+  padding-top: 1rem;
+`;
+
+export const CloseButton = styled(MdClose)`
+  cursor: pointer;
+`;
+
+export const CreateITOButton = styled.div`
+  background-color: ${props => props.theme.primary};
+  padding: 0.9rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+
+  cursor: pointer;
+
+  span {
+    color: white;
+    font-size: 0.9rem;
+    user-select: none;
+  }
 `;

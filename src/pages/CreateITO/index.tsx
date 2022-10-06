@@ -42,6 +42,7 @@ const CreateITO: React.FC = () => {
   const [maxAmount, setMaxAmount] = useState(0);
   const [assets, setAssets] = useState<IAsset[]>([]);
   const [displayShowcase, setDisplayShowcase] = useState(false);
+  const [payload, setPayload] = useState<any>();
 
   useEffect(() => {
     window.kleverWeb.provider = {
@@ -154,15 +155,33 @@ const CreateITO: React.FC = () => {
   };
 
   const loadITOInfo = () => {
-    console.log(assetInfo);
+    const parsedValues: any = {
+      kda: assetID,
+      receiverAddress: address,
+      status: status ? 1 : 0,
+      maxAmount,
+      packInfo: packs,
+    };
+
+    const parsedPayload = {
+      ...parsedValues,
+    };
+
     if (assetInfo) {
+      setPayload(parsedPayload);
       setDisplayShowcase(true);
     }
   };
 
   return (
     <>
-      {displayShowcase && <ShowcaseITO asset={assetInfo} />}
+      {displayShowcase && assetInfo && payload && (
+        <ShowcaseITO
+          closeModal={() => setDisplayShowcase(false)}
+          asset={assetInfo}
+          payload={payload}
+        />
+      )}
       <Container>
         <HeaderPage router={'/'}>Create ITO</HeaderPage>
         <Forms>
