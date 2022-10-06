@@ -72,6 +72,12 @@ export const MainContent = styled.div`
 
 export const ITOContent = styled.div`
   width: 100%;
+
+  & > div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 export const PackContainer = styled.div`
@@ -133,4 +139,11 @@ export const EmptyList = styled.div`
     user-select: none;
     color: ${props => props.theme.white};
   }
+`;
+
+export const HashContent = styled.div`
+  display: flex;
+  flex: row;
+  align-items: center;
+  gap: 0.3rem;
 `;

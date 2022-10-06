@@ -22,12 +22,15 @@ import {
   ITOContainer,
   LoadingContainer,
   MainContent,
+  HashContent,
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
-import { getPrecision, similarity } from 'utils';
+import { getPrecision, similarity, parseAddress } from 'utils';
 import NonFungibleITO from 'components/NonFungileITO';
 import Input from 'components/Input';
+import Alert from 'components/Alert';
+import Copy from 'components/Copy';
 
 export interface IAssetResponse extends IResponse {
   data: {
@@ -45,6 +48,7 @@ const ITOList: React.FC = () => {
   const [assetsOptions, setAssetsOption] = useState<any[]>([]);
   const [filteredAssets, setFilteredAssets] = useState<IAsset[]>([]);
   const [filterLabel, setFilterLabel] = useState('');
+  const [txHash, setTxHash] = useState('');
 
   const getOtherAssets = async (
     auxAssets: IAsset[],
@@ -228,7 +232,7 @@ const ITOList: React.FC = () => {
 
   const displayITO = () => {
     if (selectedAsset?.assetType === 'Fungible') {
-      return <FungibleITO asset={selectedAsset} />;
+      return <FungibleITO asset={selectedAsset} setTxHash={setTxHash} />;
     }
 
     return (
@@ -244,6 +248,7 @@ const ITOList: React.FC = () => {
                       pack={pack}
                       currencyId={item.key}
                       selectedAsset={selectedAsset}
+                      setTxHash={setTxHash}
                     />
                   );
                 })}
@@ -280,6 +285,15 @@ const ITOList: React.FC = () => {
           {displaySelect()}
           <ITOContent>
             <div>
+              {txHash && (
+                <Alert closeAlert={() => setTxHash('')}>
+                  <HashContent>
+                    Transaction hash: {parseAddress(txHash, 17)}
+                    <Copy data={txHash} info={'Transaction hash'} />
+                  </HashContent>
+                </Alert>
+              )}
+
               {selectedAsset ? (
                 displayITO()
               ) : (

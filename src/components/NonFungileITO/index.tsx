@@ -5,28 +5,33 @@ import { IAsset, IPack } from 'types';
 import { core } from '@klever/sdk';
 import { toast } from 'react-toastify';
 import Loader from 'components/Loader';
+import { getPrecision } from 'utils';
 
 interface INonFungible {
   selectedAsset: IAsset;
   pack: any;
   currencyId: string;
+  setTxHash: (e: string) => any;
 }
 
 const NonFungibleITO: React.FC<INonFungible> = ({
   selectedAsset,
   pack,
   currencyId,
+  setTxHash,
 }) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     setLoading(true);
 
+    const precision = await getPrecision(currencyId);
+
     const payload = {
       buyType: 0,
       id: selectedAsset.assetId,
       currencyId,
-      amount: pack.amount,
+      amount: precision ? pack.amount * precision : pack.amount,
     };
 
     const parsedPayload = {
@@ -44,7 +49,8 @@ const NonFungibleITO: React.FC<INonFungible> = ({
         [''],
       );
       const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
-      await core.broadcastTransactions([signedTx]);
+      const response = await core.broadcastTransactions([signedTx]);
+      setTxHash(response.data.txsHashes[0]);
       toast.success('Transaction broadcast successfully');
       setLoading(false);
     } catch (e: any) {

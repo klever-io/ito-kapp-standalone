@@ -12,7 +12,7 @@ import {
   Row,
 } from './styles';
 import { IAsset, IPack } from 'types';
-import { isFloat } from 'utils';
+import { getPrecision, isFloat } from 'utils';
 import { core } from '@klever/sdk';
 import { toast } from 'react-toastify';
 import Loader from 'components/Loader';
@@ -20,9 +20,10 @@ import Input from 'components/Input';
 
 interface IFungibleITO {
   asset: IAsset;
+  setTxHash: (e: string) => any;
 }
 
-const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
+const FungibleITO: React.FC<IFungibleITO> = ({ asset, setTxHash }) => {
   const [amount, setAmount] = useState(0);
 
   const calculateCost = (indexPackData: number, qtyPacks: number) => {
@@ -68,11 +69,13 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
   };
 
   const handleSubmit = async (currencyId: string) => {
+    const precision = await getPrecision(currencyId);
+
     const payload = {
       buyType: 0,
       id: asset.assetId,
       currencyId,
-      amount: amount,
+      amount: precision ? amount * precision : amount,
     };
 
     const parsedPayload = {
@@ -90,7 +93,8 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset }) => {
         [''],
       );
       const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
-      await core.broadcastTransactions([signedTx]);
+      const response = await core.broadcastTransactions([signedTx]);
+      setTxHash(response.data.txsHashes[0]);
       toast.success('Transaction broadcast successfully');
     } catch (e: any) {
       console.log(`%c ${e}`, 'color: red');
