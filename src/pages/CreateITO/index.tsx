@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { Container } from 'pages/styles';
+import { IAssetResponse } from 'pages/ITOList';
 import Input from 'components/Input';
 import { core } from '@klever/sdk';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
-
+import api from 'services/api';
 import {
   FormContainer,
   Form,
@@ -15,6 +16,7 @@ import {
   ButtonsContainer,
 } from './styles';
 import { getPrecision } from 'utils';
+import { IAsset } from 'types';
 
 interface IPackItems {
   amount: number;
@@ -30,13 +32,12 @@ const CreateITO: React.FC = () => {
   const navigate = useNavigate();
   const [packs, setPacks] = useState<IPack[]>([]);
   const [assetID, setAssetID] = useState('');
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(
+    window.localStorage.getItem('walletAddress') || '',
+  );
   const [status, setStatus] = useState(false);
   const [maxAmount, setMaxAmount] = useState(0);
-
-  useEffect(() => {
-    setAddress(window.kleverWeb.getWalletAddress());
-  }, [address]);
+  const [assets, setAssets] = useState<IAsset[]>([]);
 
   useEffect(() => {
     window.kleverWeb.provider = {
@@ -48,6 +49,33 @@ const CreateITO: React.FC = () => {
         'https://node.testnet.klever.finance',
     };
   }, []);
+
+  useEffect(() => {
+    getUserAssets();
+  }, []);
+
+  const getUserAssets = async () => {
+    const address = window.localStorage.getItem('walletAddress');
+
+    if (address) {
+      const response: IAssetResponse = await api.get({
+        route: `assets/kassets`,
+        query: {
+          owner: address,
+        },
+      });
+
+      const userAssets: any = [];
+
+      if (response.data && !response.error) {
+        response.data.assets.forEach((asset: IAsset) => {
+          userAssets.push({ label: asset.assetId, value: asset });
+        });
+      }
+
+      setAssets([...userAssets]);
+    }
+  };
 
   const addPack = () => {
     const packsList = [...packs];
@@ -124,13 +152,15 @@ const CreateITO: React.FC = () => {
   return (
     <>
       <Container>
-        <HeaderPage>Create ITO</HeaderPage>
+        <HeaderPage router={'/'}>Create ITO</HeaderPage>
         <Forms>
           <FormContainer precedence={1}>
             <Form>
               <Input
                 label="Asset ID"
-                onChange={e => setAssetID(e.target.value)}
+                type="dropdown"
+                dropdownOptions={assets}
+                onChange={(e: any) => setAssetID(e.value.assetId)}
               />
               <Input
                 label="Address"

@@ -13,6 +13,7 @@ const Header: React.FC = () => {
       const address = await window.kleverWeb.getWalletAddress();
       if (address.length > 0) {
         setWalletAddress(address);
+        window.localStorage.setItem('walletAddress', address);
       } else {
         handleConnect(silent);
       }
@@ -41,6 +42,7 @@ const Header: React.FC = () => {
 
         if (address.startsWith('klv') && address.length === 62) {
           setWalletAddress(address);
+          window.localStorage.setItem('walletAddress', address);
         } else {
           !silent &&
             toast.error(
