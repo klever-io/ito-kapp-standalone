@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { IAsset, IResponse } from 'types';
 import api from 'services/api';
@@ -25,8 +24,10 @@ import {
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
-import { getPrecision, similarity } from 'utils';
+import { getPrecision } from 'utils';
+import { useIsElementVisible } from 'utils/hooks';
 import Input from 'components/Input';
+import debounce from 'lodash.debounce';
 
 export interface IAssetResponse extends IResponse {
   data: {
@@ -37,67 +38,24 @@ export interface IAssetResponse extends IResponse {
 const ITOList: React.FC = () => {
   const width = useWidth();
   const navigate = useNavigate();
+  const loadMoreRef = useRef(null);
+  const isLastVisible = useIsElementVisible(loadMoreRef.current);
   const [assets, setAssets] = useState<IAsset[]>([]);
   const [loading, setLoading] = useState(true);
-  const [walletAddress, setWalletAddress] = useState('');
   const [selectedAsset, setSelectedAsset] = useState<IAsset | undefined>();
   const [assetsOptions, setAssetsOption] = useState<any[]>([]);
   const [filteredAssets, setFilteredAssets] = useState<IAsset[]>([]);
   const [filterLabel, setFilterLabel] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const getOtherAssets = async (
-    auxAssets: IAsset[],
-    totalPages: number,
-    justByOwner?: boolean,
-  ) => {
-    const options: any[] = [];
-
-    for (const x of Array(totalPages).keys()) {
-      if (x !== 0) {
-        const response: IAssetResponse = await api.get({
-          route: `assets/kassets`,
-          query: {
-            owner: justByOwner ? walletAddress : '',
-            page: x,
-          },
-        });
-
-        if (response.error) {
-          return;
-        }
-
-        response.data.assets.forEach(asset => {
-          if (asset.ito) {
-            asset.ito.packData.forEach(async (item: any, index1: number) => {
-              const precision = await getPrecision(item.key);
-              if (precision) {
-                item.packs.forEach((pack: any, index2: number) => {
-                  if (asset.ito) {
-                    asset.ito.packData[index1].packs[index2].price =
-                      pack.price / precision;
-                  }
-                });
-              }
-            });
-            auxAssets.push(asset);
-            options.push({ value: asset, label: asset.assetId });
-          }
-        });
-      }
-    }
-    setLoading(false);
-    setAssets(auxAssets);
-    setFilteredAssets(auxAssets);
-    setAssetsOption([...options]);
-  };
-
-  const getAssets = async (justByOwner?: boolean) => {
-    setLoading(true);
-    setSelectedAsset(undefined);
+  const getAssets = async (currentPage = 1, partialAsset?: string) => {
     const response: IAssetResponse = await api.get({
       route: `assets/kassets`,
       query: {
-        owner: justByOwner ? walletAddress : '',
+        page: currentPage,
+        ito: 'true',
+        asset: partialAsset ? partialAsset : '',
       },
     });
 
@@ -105,7 +63,18 @@ const ITOList: React.FC = () => {
       return;
     }
 
-    const auxAssets: IAsset[] = [];
+    setTotalPages(response.pagination.totalPages);
+
+    let auxAssets: IAsset[] = [];
+
+    if (!partialAsset && currentPage !== 0) {
+      auxAssets = [...assets];
+    }
+
+    if (currentPage === 0) {
+      setFilterLabel('');
+    }
+
     const options: any[] = [];
 
     response.data.assets.forEach(asset => {
@@ -126,51 +95,35 @@ const ITOList: React.FC = () => {
       }
     });
 
-    setAssetsOption([...options]);
-    getOtherAssets(auxAssets, response.pagination.totalPages, justByOwner);
-  };
-
-  useEffect(() => {
-    getAssets();
-  }, []);
-
-  const getAddress = async () => {
-    try {
-      const address = await window.kleverWeb.getWalletAddress();
-
-      if (address.length > 0) {
-        setWalletAddress(await window.kleverWeb.getWalletAddress());
-      }
-    } catch (e) {
-      console.error(e);
+    if (!partialAsset) {
+      setAssetsOption([...options]);
+      setAssets([...auxAssets]);
     }
+
+    setFilteredAssets([...auxAssets]);
   };
 
   useEffect(() => {
-    getAddress();
-  }, [walletAddress]);
+    if (currentPage) {
+      setLoading(true);
+      setSelectedAsset(undefined);
+      getAssets(currentPage);
+      setLoading(false);
+    } else {
+      getAssets(currentPage);
+    }
+  }, [currentPage]);
 
   useEffect(() => {
-    if (filterLabel) {
-      const newFiltered: any[] = [...filteredAssets];
+    if (currentPage + 1 <= totalPages) {
+      setCurrentPage(old => old + 1);
+    }
+  }, [isLastVisible]);
 
-      newFiltered.forEach((item: IAsset) => {
-        item.similarity = similarity(item.assetId, filterLabel);
-      });
-
-      newFiltered.sort((a: any, b: any) => {
-        if (!isNaN(Number(a.similarity)) && !isNaN(Number(b.similarity))) {
-          if (a.similarity > b.similarity) {
-            return -1;
-          } else {
-            return 1;
-          }
-        }
-        return 0;
-      });
-      setFilteredAssets(newFiltered);
-    } else {
-      setFilteredAssets([...assets]);
+  useEffect(() => {
+    if (filterLabel !== '') {
+      const debouncedSave = debounce(() => getAssets(1, filterLabel), 900);
+      debouncedSave();
     }
   }, [filterLabel]);
 
@@ -180,7 +133,11 @@ const ITOList: React.FC = () => {
         <AssetsList>
           <Input
             placeholder="Search Asset"
-            onChange={e => setFilterLabel(e.target.value)}
+            onChange={e =>
+              e.target.value === ''
+                ? getAssets(0)
+                : setFilterLabel(e.target.value)
+            }
           />
           <ScrollList>
             {filteredAssets.map((item: IAsset) => {
@@ -193,6 +150,7 @@ const ITOList: React.FC = () => {
                 </AssetContainer>
               );
             })}
+            {currentPage < totalPages && <div ref={loadMoreRef} />}
           </ScrollList>
         </AssetsList>
       );
