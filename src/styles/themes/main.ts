@@ -46,7 +46,7 @@ const main = {
     input: 'rgb(123, 125, 178)',
   },
   modal: {
-    background: '#24264f',
+    background: '#0b0b1e',
   },
 };
 

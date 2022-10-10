@@ -8,18 +8,24 @@ import {
   CloseContainer,
   CloseButton,
   CreateITOButton,
+  AssetTitle,
+  FungibleContainer,
 } from './styles';
+import { PackContainer, KeyLabel, ItemsContainer } from 'pages/ITOList/styles';
+import NonFungibleITO from 'components/NonFungileITO';
 
 interface IShowcaseITO {
   asset: IAsset;
   payload: any;
   closeModal: () => any;
+  confirmCreate: () => any;
 }
 
 const ShowcaseITO: React.FC<IShowcaseITO> = ({
   asset,
   payload,
   closeModal,
+  confirmCreate,
 }) => {
   const [assetInfo, setAssetInfo] = useState<IAsset>();
   const isFungible = asset.assetType === 'Fungible';
@@ -45,10 +51,38 @@ const ShowcaseITO: React.FC<IShowcaseITO> = ({
     <Container>
       <Content>
         <CloseContainer>
+          {!isFungible && assetInfo && (
+            <AssetTitle>{assetInfo.assetId}</AssetTitle>
+          )}
+          {isFungible && <div />}
           <CloseButton onClick={() => closeModal()} color="white" size={30} />
         </CloseContainer>
-        {isFungible && assetInfo ? <FungibleITO asset={assetInfo} /> : null}
-        <CreateITOButton>
+        {isFungible && assetInfo ? (
+          <FungibleITO showcase asset={assetInfo} />
+        ) : null}
+        <FungibleContainer>
+          {!isFungible &&
+            assetInfo?.ito?.packData.map((item: any) => {
+              return (
+                <PackContainer>
+                  <KeyLabel>{item.key}</KeyLabel>
+                  <ItemsContainer>
+                    {item.packs.map((pack: any) => {
+                      return (
+                        <NonFungibleITO
+                          pack={pack}
+                          currencyId={item.key}
+                          selectedAsset={assetInfo}
+                          showcase
+                        />
+                      );
+                    })}
+                  </ItemsContainer>
+                </PackContainer>
+              );
+            })}
+        </FungibleContainer>
+        <CreateITOButton onClick={() => confirmCreate()}>
           <span>Confirm Create ITO</span>
         </CreateITOButton>
       </Content>

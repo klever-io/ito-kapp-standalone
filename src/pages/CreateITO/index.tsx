@@ -180,6 +180,7 @@ const CreateITO: React.FC = () => {
           closeModal={() => setDisplayShowcase(false)}
           asset={assetInfo}
           payload={payload}
+          confirmCreate={handleSubmit}
         />
       )}
       <Container>

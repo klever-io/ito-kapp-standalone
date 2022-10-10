@@ -18,16 +18,33 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   background-color: ${props => props.theme.modal.background};
-  width: 50%;
+  width: 55%;
   border-radius: 0.5rem;
+
+  @media (max-width: 1000px) {
+    width: 80%;
+  }
+`;
+
+export const FungibleContainer = styled.div`
+  padding: 0rem 3rem 2rem 3rem;
 `;
 
 export const CloseContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding-right: 1rem;
   padding-top: 1rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+`;
+
+export const AssetTitle = styled.span`
+  color: ${props => props.theme.white};
+  font-size: 2rem;
+  padding-left: 3rem;
+  font-weight: bold;
 `;
 
 export const CloseButton = styled(MdClose)`
