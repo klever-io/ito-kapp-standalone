@@ -69,13 +69,11 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset, setTxHash }) => {
   };
 
   const handleSubmit = async (currencyId: string) => {
-    const precision = await getPrecision(currencyId);
-
     const payload = {
       buyType: 0,
       id: asset.assetId,
       currencyId,
-      amount: precision ? amount * precision : amount,
+      amount: amount,
     };
 
     const parsedPayload = {

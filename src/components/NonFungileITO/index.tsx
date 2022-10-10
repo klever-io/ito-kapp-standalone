@@ -25,13 +25,11 @@ const NonFungibleITO: React.FC<INonFungible> = ({
   const handleSubmit = async () => {
     setLoading(true);
 
-    const precision = await getPrecision(currencyId);
-
     const payload = {
       buyType: 0,
       id: selectedAsset.assetId,
       currencyId,
-      amount: precision ? pack.amount * precision : pack.amount,
+      amount: pack.amount,
     };
 
     const parsedPayload = {
