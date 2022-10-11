@@ -24,6 +24,13 @@ const Header: React.FC = () => {
 
   const handleConnect = async (silent?: boolean) => {
     if (!walletAddress) {
+      if (!window.kleverWeb?.provider) {
+        toast.warn(
+          'Make sure you have the Klever Extension installed in your browser. Restart the page if necessary.',
+        );
+        return;
+      }
+
       window.kleverWeb.provider = {
         api:
           process.env.REACT_APP_DEFAULT_API_HOST ||
@@ -56,7 +63,9 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
-    connectWallet(false);
+    setTimeout(() => {
+      connectWallet(false);
+    }, 800);
   }, []);
 
   return (

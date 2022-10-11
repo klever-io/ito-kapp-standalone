@@ -23,6 +23,7 @@ import {
   LoadingContainer,
   MainContent,
   HashContent,
+  SelectContainer,
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
@@ -214,10 +215,12 @@ const ITOList: React.FC = () => {
     if (width.width <= 768) {
       if (!loading)
         return (
-          <Select
-            options={assetsOptions}
-            onChange={e => setSelectedAsset(e.value)}
-          />
+          <SelectContainer>
+            <Select
+              options={assetsOptions}
+              onChange={e => setSelectedAsset(e.value)}
+            />
+          </SelectContainer>
         );
       else
         return (

@@ -94,6 +94,10 @@ export const PackContainer = styled.div`
   }
 `;
 
+export const SelectContainer = styled.div`
+  z-index: 999;
+`;
+
 export const KeyLabel = styled.span`
   font-size: 1.5rem;
 `;

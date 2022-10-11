@@ -36,7 +36,7 @@ export const PackItem = styled.div`
 export const Cube = styled.img`
   width: 7rem;
   margin-bottom: -3.6rem;
-  z-index: 999;
+  z-index: 998;
 
   @media (max-width: 890px) {
     width: 5rem;
