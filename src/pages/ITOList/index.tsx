@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { IAsset, IResponse } from 'types';
 import api from 'services/api';
@@ -53,6 +53,11 @@ const ITOList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [txHash, setTxHash] = useState('');
+
+  const debouncedLabel = useCallback(
+    debounce(filterLabel => getAssets(1, filterLabel), 900),
+    [],
+  );
 
   const getAssets = async (currentPage = 1, partialAsset?: string) => {
     const response: IAssetResponse = await api.get({
@@ -127,8 +132,7 @@ const ITOList: React.FC = () => {
 
   useEffect(() => {
     if (filterLabel !== '') {
-      const debouncedSave = debounce(() => getAssets(1, filterLabel), 900);
-      debouncedSave();
+      debouncedLabel(filterLabel);
     }
   }, [filterLabel]);
 
