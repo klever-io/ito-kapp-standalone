@@ -186,7 +186,7 @@ const CreateITO: React.FC = () => {
             {packs.map((item: IPack, index: number) => {
               return (
                 <FormContainer precedence={2}>
-                  <TitleForm>Pack</TitleForm>
+                  <TitleForm>Pack {index + 1}</TitleForm>
                   <Form span={1}>
                     <Input
                       label="Pack Currency ID"

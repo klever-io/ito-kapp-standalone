@@ -18,6 +18,13 @@ export const InputNormal = styled.input`
   padding: 0.6rem 0.9rem;
   color: ${props => props.theme.form.input};
   width: 100%;
+
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  -moz-appearance: textfield;
 `;
 
 export const Slider = styled.span`

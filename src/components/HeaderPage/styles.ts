@@ -42,6 +42,8 @@ export const Button = styled.div`
   border-radius: 0.2rem;
   padding: 0.5rem 0.8rem;
   cursor: pointer;
+  text-align: center;
+
   span {
     font-size: 1rem;
   }

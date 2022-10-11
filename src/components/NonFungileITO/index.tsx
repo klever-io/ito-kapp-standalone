@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
-import { PackItem, BuyButton } from './styles';
+import { PackItem, BuyButton, Pack, Cube } from './styles';
 import { IAsset, IPack } from 'types';
 import { core } from '@klever/sdk';
 import { toast } from 'react-toastify';
 import Loader from 'components/Loader';
 import { getPrecision } from 'utils';
+import cube from 'assets/img/cube.png';
 
 interface INonFungible {
   selectedAsset: IAsset;
@@ -59,21 +60,24 @@ const NonFungibleITO: React.FC<INonFungible> = ({
   };
 
   return (
-    <PackItem>
-      <p>
-        {pack.amount} {selectedAsset.ticker}
-      </p>
-      <p>
-        {pack.price} {currencyId}
-      </p>
-      {loading ? (
-        <Loader />
-      ) : (
-        <BuyButton onClick={() => handleSubmit()}>
-          <span>Buy Pack</span>
-        </BuyButton>
-      )}
-    </PackItem>
+    <Pack>
+      <Cube src={cube} />
+      <PackItem>
+        <p>
+          {pack.amount} {selectedAsset.ticker}
+        </p>
+        <p>
+          {pack.price} {currencyId}
+        </p>
+        {loading ? (
+          <Loader />
+        ) : (
+          <BuyButton onClick={() => handleSubmit()}>
+            <span>Buy Pack</span>
+          </BuyButton>
+        )}
+      </PackItem>
+    </Pack>
   );
 };
 
