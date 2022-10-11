@@ -9,7 +9,7 @@ import {
   AssetContainer,
   AssetsList,
   IDAsset,
-  PackItem,
+  KeyLabel,
   PackContainer,
   EmptyList,
   ChooseAsset,
@@ -21,13 +21,17 @@ import {
   ITOContainer,
   LoadingContainer,
   MainContent,
+  HashContent,
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
-import { getPrecision } from 'utils';
+import { getPrecision, parseAddress } from 'utils';
 import { useIsElementVisible } from 'utils/hooks';
 import Input from 'components/Input';
 import debounce from 'lodash.debounce';
+import NonFungibleITO from 'components/NonFungileITO';
+import Alert from 'components/Alert';
+import Copy from 'components/Copy';
 
 export interface IAssetResponse extends IResponse {
   data: {
@@ -48,6 +52,7 @@ const ITOList: React.FC = () => {
   const [filterLabel, setFilterLabel] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [txHash, setTxHash] = useState('');
 
   const getAssets = async (currentPage = 1, partialAsset?: string) => {
     const response: IAssetResponse = await api.get({
@@ -185,7 +190,7 @@ const ITOList: React.FC = () => {
 
   const displayITO = () => {
     if (selectedAsset?.assetType === 'Fungible') {
-      return <FungibleITO asset={selectedAsset} />;
+      return <FungibleITO asset={selectedAsset} setTxHash={setTxHash} />;
     }
 
     return (
@@ -193,18 +198,16 @@ const ITOList: React.FC = () => {
         {selectedAsset?.ito?.packData.map((item: any) => {
           return (
             <PackContainer>
-              <span>{item.key}</span>
+              <KeyLabel>{item.key}</KeyLabel>
               <ItemsContainer>
                 {item.packs.map((pack: any) => {
                   return (
-                    <PackItem>
-                      <p>
-                        {pack.amount} {selectedAsset.ticker}
-                      </p>
-                      <p>
-                        {pack.price} {item.key}
-                      </p>
-                    </PackItem>
+                    <NonFungibleITO
+                      pack={pack}
+                      currencyId={item.key}
+                      selectedAsset={selectedAsset}
+                      setTxHash={setTxHash}
+                    />
                   );
                 })}
               </ItemsContainer>
@@ -240,6 +243,15 @@ const ITOList: React.FC = () => {
           {displaySelect()}
           <ITOContent>
             <div>
+              {txHash && (
+                <Alert closeAlert={() => setTxHash('')}>
+                  <HashContent>
+                    Transaction hash: {parseAddress(txHash, 17)}
+                    <Copy data={txHash} info={'Transaction hash'} />
+                  </HashContent>
+                </Alert>
+              )}
+
               {selectedAsset ? (
                 displayITO()
               ) : (
