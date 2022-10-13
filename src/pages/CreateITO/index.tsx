@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import HeaderPage from 'components/HeaderPage';
+import ShowcaseITO from './Modal';
 import { Container } from 'pages/styles';
 import { IAssetResponse } from 'pages/ITOList';
 import Input from 'components/Input';
@@ -32,12 +34,15 @@ const CreateITO: React.FC = () => {
   const navigate = useNavigate();
   const [packs, setPacks] = useState<IPack[]>([]);
   const [assetID, setAssetID] = useState('');
+  const [assetInfo, setAssetInfo] = useState<IAsset>();
   const [address, setAddress] = useState(
     window.localStorage.getItem('walletAddress') || '',
   );
   const [status, setStatus] = useState(false);
   const [maxAmount, setMaxAmount] = useState(0);
   const [assets, setAssets] = useState<IAsset[]>([]);
+  const [displayShowcase, setDisplayShowcase] = useState(false);
+  const [payload, setPayload] = useState<any>();
 
   useEffect(() => {
     window.kleverWeb.provider = {
@@ -149,8 +154,35 @@ const CreateITO: React.FC = () => {
     }
   };
 
+  const loadITOInfo = () => {
+    const parsedValues: any = {
+      kda: assetID,
+      receiverAddress: address,
+      status: status ? 1 : 0,
+      maxAmount,
+      packInfo: packs,
+    };
+
+    const parsedPayload = {
+      ...parsedValues,
+    };
+
+    if (assetInfo) {
+      setPayload(parsedPayload);
+      setDisplayShowcase(true);
+    }
+  };
+
   return (
     <>
+      {displayShowcase && assetInfo && payload && (
+        <ShowcaseITO
+          closeModal={() => setDisplayShowcase(false)}
+          asset={assetInfo}
+          payload={payload}
+          confirmCreate={handleSubmit}
+        />
+      )}
       <Container>
         <HeaderPage router={'/'}>Create ITO</HeaderPage>
         <Forms>
@@ -160,7 +192,10 @@ const CreateITO: React.FC = () => {
                 label="Asset ID"
                 type="dropdown"
                 dropdownOptions={assets}
-                onChange={(e: any) => setAssetID(e.value.assetId)}
+                onChange={(e: any) => {
+                  setAssetID(e.value.assetId);
+                  setAssetInfo(e.value);
+                }}
               />
               <Input
                 label="Address"
@@ -256,7 +291,7 @@ const CreateITO: React.FC = () => {
               )}
             </ButtonsContainer>
           </FormContainer>
-          <Button onClick={() => handleSubmit()}>
+          <Button onClick={() => loadITOInfo()}>
             <span>CREATE ITO</span>
           </Button>
         </Forms>

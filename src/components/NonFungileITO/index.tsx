@@ -12,7 +12,8 @@ interface INonFungible {
   selectedAsset: IAsset;
   pack: any;
   currencyId: string;
-  setTxHash: (e: string) => any;
+  setTxHash?: (e: string) => any;
+  showcase?: boolean;
 }
 
 const NonFungibleITO: React.FC<INonFungible> = ({
@@ -20,6 +21,7 @@ const NonFungibleITO: React.FC<INonFungible> = ({
   pack,
   currencyId,
   setTxHash,
+  showcase,
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +51,7 @@ const NonFungibleITO: React.FC<INonFungible> = ({
       );
       const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
       const response = await core.broadcastTransactions([signedTx]);
-      setTxHash(response.data.txsHashes[0]);
+      if (setTxHash) setTxHash(response.data.txsHashes[0]);
       toast.success('Transaction broadcast successfully');
       setLoading(false);
     } catch (e: any) {
@@ -69,12 +71,16 @@ const NonFungibleITO: React.FC<INonFungible> = ({
         <p>
           {pack.price} {currencyId}
         </p>
-        {loading ? (
-          <Loader />
-        ) : (
-          <BuyButton onClick={() => handleSubmit()}>
-            <span>Buy Pack</span>
-          </BuyButton>
+        {!showcase && (
+          <>
+            {loading ? (
+              <Loader />
+            ) : (
+              <BuyButton onClick={() => handleSubmit()}>
+                <span>Buy Pack</span>
+              </BuyButton>
+            )}
+          </>
         )}
       </PackItem>
     </Pack>
