@@ -45,6 +45,9 @@ const main = {
   form: {
     input: 'rgb(123, 125, 178)',
   },
+  modal: {
+    background: '#0b0b1e',
+  },
 };
 
 export default main;

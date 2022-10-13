@@ -20,10 +20,15 @@ import Input from 'components/Input';
 
 interface IFungibleITO {
   asset: IAsset;
-  setTxHash: (e: string) => any;
+  showcase?: boolean;
+  setTxHash?: (e: string) => any;
 }
 
-const FungibleITO: React.FC<IFungibleITO> = ({ asset, setTxHash }) => {
+const FungibleITO: React.FC<IFungibleITO> = ({
+  asset,
+  setTxHash,
+  showcase,
+}) => {
   const [amount, setAmount] = useState(0);
 
   const calculateCost = (indexPackData: number, qtyPacks: number) => {
@@ -92,7 +97,7 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset, setTxHash }) => {
       );
       const signedTx = await window.kleverWeb.signTransaction(unsignedTx);
       const response = await core.broadcastTransactions([signedTx]);
-      setTxHash(response.data.txsHashes[0]);
+      if (setTxHash) setTxHash(response.data.txsHashes[0]);
       toast.success('Transaction broadcast successfully');
     } catch (e: any) {
       console.log(`%c ${e}`, 'color: red');
@@ -113,14 +118,20 @@ const FungibleITO: React.FC<IFungibleITO> = ({ asset, setTxHash }) => {
                 onChange={e => setAmount(Number(e.target.value))}
               />
               <TotalPrice>
-                <span>You will pay</span>{' '}
+                {showcase ? (
+                  <span>It will cost</span>
+                ) : (
+                  <span>You will pay</span>
+                )}{' '}
                 <span>
                   {calculateCost(indexPackData, pack.packs.length)} {pack.key}
                 </span>
               </TotalPrice>
-              <Button onClick={() => handleSubmit(pack.key)}>
-                <span>Buy Token</span>
-              </Button>
+              {!showcase && (
+                <Button onClick={() => handleSubmit(pack.key)}>
+                  <span>Buy Token</span>
+                </Button>
+              )}
             </Content>
             <Content>
               <PriceRange>
