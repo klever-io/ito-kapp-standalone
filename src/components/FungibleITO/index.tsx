@@ -74,6 +74,11 @@ const FungibleITO: React.FC<IFungibleITO> = ({
   };
 
   const handleSubmit = async (currencyId: string) => {
+    if (!amount) {
+      toast.error('The amount field cannot be empty or zero!');
+      return;
+    }
+
     const payload = {
       buyType: 0,
       id: asset.assetId,

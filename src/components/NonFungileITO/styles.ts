@@ -1,8 +1,16 @@
 import styled from 'styled-components';
 
+export const Pack = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const PackItem = styled.div`
   background-color: #222345;
-  padding: 1rem 0.5rem;
+  padding: 3rem 0.5rem 1rem 0.5rem;
+
+  width: 100%;
 
   display: flex;
   align-items: center;
@@ -22,6 +30,16 @@ export const PackItem = styled.div`
       font-size: 1rem;
     }
     color: white;
+  }
+`;
+
+export const Cube = styled.img`
+  width: 7rem;
+  margin-bottom: -3.6rem;
+  z-index: 998;
+
+  @media (max-width: 890px) {
+    width: 5rem;
   }
 `;
 

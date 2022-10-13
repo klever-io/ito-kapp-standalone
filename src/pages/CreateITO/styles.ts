@@ -15,8 +15,11 @@ export const FormContainer = styled.div<IFormContainer>`
       : precedence === 2
       ? '#292a53'
       : '#313264'};
-  padding: 1rem 2rem;
+  padding: 1.5rem 2rem;
   border-radius: 1rem;
+
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
 
   display: flex;
   flex-direction: column;
