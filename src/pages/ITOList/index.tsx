@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import HeaderPage from 'components/HeaderPage';
 import { IAsset, IResponse } from 'types';
 import api from 'services/api';
 import Loader from 'components/Loader';
 import FungibleITO from 'components/FungibleITO';
-import Select from 'react-select';
 import {
   AssetContainer,
   AssetsList,
@@ -14,7 +13,8 @@ import {
   EmptyList,
   ChooseAsset,
   SideList,
-  ScrollList,
+  Scroll,
+  Scrollable,
   MainContainer,
   ItemsContainer,
   ITOContent,
@@ -22,17 +22,17 @@ import {
   LoadingContainer,
   MainContent,
   HashContent,
-  SelectContainer,
+  LineInputSection,
 } from './styles';
 import { useWidth } from 'contexts/width';
 import { useNavigate } from 'react-router';
 import { getPrecision, parseAddress } from 'utils';
-import { useIsElementVisible } from 'utils/hooks';
 import Input from 'components/Input';
 import debounce from 'lodash.debounce';
 import NonFungibleITO from 'components/NonFungileITO';
 import Alert from 'components/Alert';
 import Copy from 'components/Copy';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export interface IAssetResponse extends IResponse {
   data: {
@@ -43,12 +43,10 @@ export interface IAssetResponse extends IResponse {
 const ITOList: React.FC = () => {
   const width = useWidth();
   const navigate = useNavigate();
-  const loadMoreRef = useRef(null);
-  const isLastVisible = useIsElementVisible(loadMoreRef.current);
   const [assets, setAssets] = useState<IAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState<IAsset | undefined>();
-  const [assetsOptions, setAssetsOption] = useState<any[]>([]);
+
   const [filteredAssets, setFilteredAssets] = useState<IAsset[]>([]);
   const [filterLabel, setFilterLabel] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,7 +105,6 @@ const ITOList: React.FC = () => {
     });
 
     if (!partialAsset) {
-      setAssetsOption([...options]);
       setAssets([...auxAssets]);
     }
 
@@ -125,11 +122,11 @@ const ITOList: React.FC = () => {
     }
   }, [currentPage]);
 
-  useEffect(() => {
+  const nextAssetsPage = () => {
     if (currentPage + 1 <= totalPages) {
       setCurrentPage(old => old + 1);
     }
-  }, [isLastVisible]);
+  };
 
   useEffect(() => {
     if (filterLabel !== '') {
@@ -140,29 +137,46 @@ const ITOList: React.FC = () => {
   const assetsTable = () => {
     if (assets.length > 0) {
       return (
-        <AssetsList>
-          <Input
-            placeholder="Search Asset"
-            onChange={e =>
-              e.target.value === ''
-                ? getAssets(0)
-                : setFilterLabel(e.target.value)
-            }
-          />
-          <ScrollList>
-            {filteredAssets.map((item: IAsset) => {
-              return (
-                <AssetContainer onClick={() => setSelectedAsset(item)}>
-                  <IDAsset>
-                    <span>{item.assetId}</span>
-                    <span>{item.assetType}</span>
-                  </IDAsset>
-                </AssetContainer>
-              );
-            })}
-            {currentPage < totalPages && <div ref={loadMoreRef} />}
-          </ScrollList>
-        </AssetsList>
+        <>
+          <AssetsList>
+            <Input
+              placeholder="Search Asset"
+              onChange={e =>
+                e.target.value === ''
+                  ? getAssets(0)
+                  : setFilterLabel(e.target.value)
+              }
+            />
+            <Scrollable id="scrollableDiv">
+              <InfiniteScroll
+                style={{
+                  gap: '0.7rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+                dataLength={assets.length}
+                next={nextAssetsPage}
+                hasMore={true}
+                loader={<></>}
+                scrollableTarget={'scrollableDiv'}
+              >
+                <Scroll>
+                  {filteredAssets.map((item: IAsset) => {
+                    return (
+                      <AssetContainer onClick={() => setSelectedAsset(item)}>
+                        <IDAsset>
+                          <span>{item.assetId}</span>
+                          <span>{item.assetType}</span>
+                        </IDAsset>
+                      </AssetContainer>
+                    );
+                  })}
+                </Scroll>
+              </InfiniteScroll>
+            </Scrollable>
+          </AssetsList>
+          {width.width < 768 && <LineInputSection />}
+        </>
       );
     }
 
@@ -171,28 +185,6 @@ const ITOList: React.FC = () => {
         <span>None found</span>
       </EmptyList>
     );
-  };
-
-  const displaySelect = () => {
-    if (width.width <= 768) {
-      if (!loading)
-        return (
-          <SelectContainer>
-            <Select
-              options={assetsOptions}
-              onChange={e => setSelectedAsset(e.value)}
-            />
-          </SelectContainer>
-        );
-      else
-        return (
-          <LoadingContainer>
-            <Loader />
-          </LoadingContainer>
-        );
-    }
-
-    return <></>;
   };
 
   const displayITO = () => {
@@ -236,18 +228,15 @@ const ITOList: React.FC = () => {
           ITOs
         </HeaderPage>
         <MainContent>
-          {width.width > 768 && (
-            <SideList>
-              {!loading ? (
-                <AssetsList>{assetsTable()}</AssetsList>
-              ) : (
-                <LoadingContainer>
-                  <Loader />
-                </LoadingContainer>
-              )}
-            </SideList>
-          )}
-          {displaySelect()}
+          <SideList>
+            {!loading ? (
+              <AssetsList>{assetsTable()}</AssetsList>
+            ) : (
+              <LoadingContainer>
+                <Loader />
+              </LoadingContainer>
+            )}
+          </SideList>
           <ITOContent>
             <div>
               {txHash && (
