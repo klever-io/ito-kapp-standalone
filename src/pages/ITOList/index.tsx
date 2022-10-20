@@ -54,7 +54,7 @@ const ITOList: React.FC = () => {
   const [txHash, setTxHash] = useState('');
 
   const debouncedLabel = useCallback(
-    debounce(filterLabel => getAssets(1, filterLabel), 900),
+    debounce(filterLabel => getAssets(1, filterLabel), 400),
     [],
   );
 
@@ -78,10 +78,6 @@ const ITOList: React.FC = () => {
 
     if (!partialAsset && currentPage !== 0) {
       auxAssets = [...assets];
-    }
-
-    if (currentPage === 0) {
-      setFilterLabel('');
     }
 
     const options: any[] = [];
@@ -129,9 +125,7 @@ const ITOList: React.FC = () => {
   };
 
   useEffect(() => {
-    if (filterLabel !== '') {
-      debouncedLabel(filterLabel);
-    }
+    debouncedLabel(filterLabel);
   }, [filterLabel]);
 
   const assetsTable = () => {
@@ -141,11 +135,9 @@ const ITOList: React.FC = () => {
           <AssetsList>
             <Input
               placeholder="Search Asset"
-              onChange={e =>
-                e.target.value === ''
-                  ? getAssets(0)
-                  : setFilterLabel(e.target.value)
-              }
+              onChange={e => {
+                setFilterLabel(e.target.value);
+              }}
             />
             <Scrollable id="scrollableDiv">
               <InfiniteScroll
