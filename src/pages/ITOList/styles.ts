@@ -13,20 +13,14 @@ export const MainContainer = styled.div`
 
 export const SideList = styled.div`
   width: 30rem;
-  height: calc(100vh - 4rem);
   padding: 1rem 1rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const AssetsList = styled.div`
-  gap: 0.7rem;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const ScrollList = styled.div`
-  height: calc(100vh - 18rem);
-  padding: 0rem 0.2rem;
-  overflow: scroll;
   gap: 0.7rem;
   display: flex;
   flex-direction: column;
@@ -67,6 +61,7 @@ export const MainContent = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
+    align-items: center;
   }
 `;
 
@@ -92,10 +87,6 @@ export const PackContainer = styled.div`
   span {
     color: white;
   }
-`;
-
-export const SelectContainer = styled.div`
-  z-index: 999;
 `;
 
 export const KeyLabel = styled.span`
@@ -150,4 +141,24 @@ export const HashContent = styled.div`
   flex: row;
   align-items: center;
   gap: 0.3rem;
+`;
+
+export const LineInputSection = styled.div`
+  height: 0.1rem;
+  background-color: ${props => props.theme.primary};
+`;
+
+export const Scroll = styled.div`
+  gap: 0.7rem;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Scrollable = styled.div`
+  height: 30rem;
+  overflow-y: scroll;
+
+  @media (max-width: 768px) {
+    height: 11rem;
+  }
 `;
