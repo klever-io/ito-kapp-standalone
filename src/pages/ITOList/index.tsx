@@ -145,6 +145,7 @@ const ITOList: React.FC = () => {
                   gap: '0.7rem',
                   display: 'flex',
                   flexDirection: 'column',
+                  marginBottom: 15,
                 }}
                 dataLength={assets.length}
                 next={nextAssetsPage}
