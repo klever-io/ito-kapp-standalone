@@ -1,5 +1,25 @@
 {
   "projects": {
     "default": "ito-kapp"
-  }
+  },
+  "targets": {
+    "kapp-demos": {
+      "hosting": {
+        "devnet": [
+          "ito-kapp-devnet"
+        ],
+        "mainnet": [
+          "ito-kapp"
+        ]
+      }
+    },
+    "ito-kapp": {
+      "hosting": {
+        "devnet": [
+          "ito-kapp-devnet"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
