@@ -11,7 +11,7 @@ import {
   PriceRangeTitle,
   Row,
 } from './styles';
-import { IAsset, IPack } from 'types';
+import { IAsset, IITO, IPack } from 'types';
 import { getPrecision, isFloat } from 'utils';
 import { core } from '@klever/sdk';
 import { toast } from 'react-toastify';
@@ -19,21 +19,17 @@ import Loader from 'components/Loader';
 import Input from 'components/Input';
 
 interface IFungibleITO {
-  asset: IAsset;
+  ito: IITO;
   showcase?: boolean;
   setTxHash?: (e: string) => any;
 }
 
-const FungibleITO: React.FC<IFungibleITO> = ({
-  asset,
-  setTxHash,
-  showcase,
-}) => {
+const FungibleITO: React.FC<IFungibleITO> = ({ ito, setTxHash, showcase }) => {
   const [amount, setAmount] = useState(0);
 
   const calculateCost = (indexPackData: number, qtyPacks: number) => {
-    if (asset.ito) {
-      const packs = asset.ito.packData[indexPackData].packs;
+    if (ito) {
+      const packs = ito.packData[indexPackData].packs;
       if (qtyPacks === 1) {
         return amount * packs[0].price;
       } else if (qtyPacks === 2) {
@@ -81,7 +77,7 @@ const FungibleITO: React.FC<IFungibleITO> = ({
 
     const payload = {
       buyType: 0,
-      id: asset.assetId,
+      id: ito.assetId,
       currencyId,
       amount: amount,
     };
@@ -112,11 +108,11 @@ const FungibleITO: React.FC<IFungibleITO> = ({
 
   return (
     <Container>
-      {asset.ito?.packData.map((pack: any, indexPackData: number) => {
+      {ito.packData.map((pack: any, indexPackData: number) => {
         return (
           <FungibleContainer>
             <Content>
-              <AssetName>{asset.assetId}</AssetName>
+              <AssetName>{ito.assetId}</AssetName>
               <Input
                 label="Amount"
                 type="number"
@@ -149,7 +145,7 @@ const FungibleITO: React.FC<IFungibleITO> = ({
                       <Row>
                         <span>0 +</span>
                         <span>
-                          {packInfo.price} {pack.key} / {asset.ticker}
+                          {packInfo.price} {pack.key} / {ito.assetId}
                         </span>
                       </Row>
                     );
@@ -162,7 +158,7 @@ const FungibleITO: React.FC<IFungibleITO> = ({
                             : `${pack.packs[0].amount} <`}
                         </span>
                         <span>
-                          {packInfo.price} {pack.key} / {asset.ticker}
+                          {packInfo.price} {pack.key} / {ito.assetId}
                         </span>
                       </Row>
                     );
@@ -183,7 +179,7 @@ const FungibleITO: React.FC<IFungibleITO> = ({
                         </span>
                       )}
                       <span>
-                        {packInfo.price} {pack.key} / {asset.ticker}
+                        {packInfo.price} {pack.key} / {ito.assetId}
                       </span>
                     </Row>
                   );

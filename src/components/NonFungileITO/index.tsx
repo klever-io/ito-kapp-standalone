@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import { PackItem, BuyButton, Pack, Cube } from './styles';
-import { IAsset, IPack } from 'types';
+import { IAsset, IITO, IPack } from 'types';
 import { core } from '@klever/sdk';
 import { toast } from 'react-toastify';
 import Loader from 'components/Loader';
@@ -9,7 +9,7 @@ import { getPrecision } from 'utils';
 import cube from 'assets/img/cube.png';
 
 interface INonFungible {
-  selectedAsset: IAsset;
+  selectedITO: IITO;
   pack: any;
   currencyId: string;
   setTxHash?: (e: string) => any;
@@ -17,7 +17,7 @@ interface INonFungible {
 }
 
 const NonFungibleITO: React.FC<INonFungible> = ({
-  selectedAsset,
+  selectedITO,
   pack,
   currencyId,
   setTxHash,
@@ -30,7 +30,7 @@ const NonFungibleITO: React.FC<INonFungible> = ({
 
     const payload = {
       buyType: 0,
-      id: selectedAsset.assetId,
+      id: selectedITO.assetId,
       currencyId,
       amount: pack.amount,
     };
@@ -66,7 +66,7 @@ const NonFungibleITO: React.FC<INonFungible> = ({
       <Cube src={cube} />
       <PackItem>
         <p>
-          {pack.amount} {selectedAsset.ticker}
+          {pack.amount} {selectedITO.assetId}
         </p>
         <p>
           {pack.price} {currencyId}

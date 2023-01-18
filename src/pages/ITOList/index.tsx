@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import HeaderPage from 'components/HeaderPage';
-import { IAsset, IResponse } from 'types';
+import { IITO, IResponse } from 'types';
 import api from 'services/api';
 import Loader from 'components/Loader';
 import FungibleITO from 'components/FungibleITO';
@@ -34,20 +34,20 @@ import Alert from 'components/Alert';
 import Copy from 'components/Copy';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-export interface IAssetResponse extends IResponse {
+export interface IITOResponse extends IResponse {
   data: {
-    assets: IAsset[];
+    itos: IITO[];
   };
 }
 
 const ITOList: React.FC = () => {
   const width = useWidth();
   const navigate = useNavigate();
-  const [assets, setAssets] = useState<IAsset[]>([]);
+  const [assets, setAssets] = useState<IITO[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedAsset, setSelectedAsset] = useState<IAsset | undefined>();
+  const [selectedITO, setSelectedITO] = useState<IITO | undefined>();
 
-  const [filteredAssets, setFilteredAssets] = useState<IAsset[]>([]);
+  const [filteredAssets, setFilteredAssets] = useState<IITO[]>([]);
   const [filterLabel, setFilterLabel] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -59,22 +59,19 @@ const ITOList: React.FC = () => {
   );
 
   const getAssets = async (currentPage = 1, partialAsset?: string) => {
-    const response: IAssetResponse = await api.get({
-      route: `assets/kassets`,
+    const response: IITOResponse = await api.get({
+      route: `ito/list`,
       query: {
         page: currentPage,
-        ito: 'true',
         asset: partialAsset ? partialAsset : '',
       },
     });
-
     if (response.error) {
       return;
     }
-
     setTotalPages(response.pagination.totalPages);
 
-    let auxAssets: IAsset[] = [];
+    let auxAssets: IITO[] = [];
 
     if (!partialAsset && currentPage !== 0) {
       auxAssets = [...assets];
@@ -82,22 +79,19 @@ const ITOList: React.FC = () => {
 
     const options: any[] = [];
 
-    response.data.assets.forEach(asset => {
-      if (asset.ito) {
-        asset.ito.packData.forEach(async (item: any, index1: number) => {
-          const precision = await getPrecision(item.key);
-          if (precision) {
-            item.packs.forEach((pack: any, index2: number) => {
-              if (asset.ito) {
-                asset.ito.packData[index1].packs[index2].price =
-                  pack.price / precision;
-              }
-            });
-          }
-        });
-        auxAssets.push(asset);
-        options.push({ value: asset, label: asset.assetId });
-      }
+    response.data.itos.forEach(ito => {
+      ito.packData.forEach(async (item: any, index1: number) => {
+        const precision = await getPrecision(item.key);
+        if (precision) {
+          item.packs.forEach((pack: any, index2: number) => {
+            if (ito) {
+              ito.packData[index1].packs[index2].price = pack.price / precision;
+            }
+          });
+        }
+      });
+      auxAssets.push(ito);
+      options.push({ value: ito, label: ito.assetId });
     });
 
     if (!partialAsset) {
@@ -110,7 +104,7 @@ const ITOList: React.FC = () => {
   useEffect(() => {
     if (currentPage) {
       setLoading(true);
-      setSelectedAsset(undefined);
+      setSelectedITO(undefined);
       getAssets(currentPage);
       setLoading(false);
     } else {
@@ -154,12 +148,11 @@ const ITOList: React.FC = () => {
                 scrollableTarget={'scrollableDiv'}
               >
                 <Scroll>
-                  {filteredAssets.map((item: IAsset) => {
+                  {filteredAssets.map((item: IITO) => {
                     return (
-                      <AssetContainer onClick={() => setSelectedAsset(item)}>
+                      <AssetContainer onClick={() => setSelectedITO(item)}>
                         <IDAsset>
                           <span>{item.assetId}</span>
-                          <span>{item.assetType}</span>
                         </IDAsset>
                       </AssetContainer>
                     );
@@ -181,13 +174,13 @@ const ITOList: React.FC = () => {
   };
 
   const displayITO = () => {
-    if (selectedAsset?.assetType === 'Fungible') {
-      return <FungibleITO asset={selectedAsset} setTxHash={setTxHash} />;
+    if (selectedITO?.assetType === 'Fungible') {
+      return <FungibleITO ito={selectedITO} setTxHash={setTxHash} />;
     }
 
     return (
       <>
-        {selectedAsset?.ito?.packData.map((item: any) => {
+        {selectedITO?.packData.map((item: any) => {
           return (
             <PackContainer>
               <KeyLabel>{item.key}</KeyLabel>
@@ -197,7 +190,7 @@ const ITOList: React.FC = () => {
                     <NonFungibleITO
                       pack={pack}
                       currencyId={item.key}
-                      selectedAsset={selectedAsset}
+                      selectedITO={selectedITO}
                       setTxHash={setTxHash}
                     />
                   );
@@ -241,7 +234,7 @@ const ITOList: React.FC = () => {
                 </Alert>
               )}
 
-              {selectedAsset ? (
+              {selectedITO ? (
                 displayITO()
               ) : (
                 <>

@@ -42,17 +42,32 @@ export interface IAsset {
     isNFTMintStopped: boolean;
   };
   roles?: IRolesInfo[];
-  ito?: {
-    isActive: boolean;
-    maxAmount: number;
-    mintedAmount: number;
-    receiverAddress: string;
-    packData: {
-      key: string;
-      packs: IPack[];
-    }[];
-  };
   similarity?: number;
+}
+
+export interface IITO {
+  assetId: string;
+  assetType: 'Fungible' | 'NotFungible';
+  isActive: boolean;
+  maxAmount: number;
+  mintedAmount: number;
+  receiverAddress: string;
+  packData: {
+    key: string;
+    packs: IPack[];
+  }[];
+  defaultLimitPerAddress: number;
+  isWhitelistActive: boolean;
+  whitelistInfo: IWhiteListAdress[];
+  whitelistStartTime: number;
+  whitelistEndTime: number;
+  startTime: number;
+  endTime: number;
+}
+
+interface IWhiteListAdress {
+  address: string;
+  limit: number;
 }
 
 interface IProperties {
